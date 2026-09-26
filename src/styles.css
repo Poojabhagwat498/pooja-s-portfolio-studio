@@ -313,3 +313,9 @@
  .contact-details { justify-items: start; margin-top: 24px; }
  .case-dialog { max-width: calc(100vw - 28px); }
 }
+@media (max-width: 680px) {
+ .site-nav { gap: 0; padding: 4px 4px 4px 9px; }
+ .site-nav a:not(.nav-cta) { font-size: 9px; padding: 8px 4px; }
+ .site-nav .nav-cta { padding: 8px 9px; font-size: 9px; }
+ .site-nav a[href="#achievements"] { display: none; }
+}
