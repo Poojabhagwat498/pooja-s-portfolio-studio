@@ -12,6 +12,7 @@ import {
   skillGroups,
 } from "@/lib/portfolio-data";
 import heroSystem from "@/assets/hero-system.jpg";
+import portraitAsset from "@/assets/pooja-portrait.jpg.asset.json";
 
 const TITLE = "Pooja Bhagwat | Computer Science Engineer & MERN Stack Developer";
 const DESCRIPTION =
