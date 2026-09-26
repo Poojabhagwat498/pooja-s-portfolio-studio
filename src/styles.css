@@ -166,8 +166,12 @@
 @keyframes ticker { to { transform: translateX(-50%); } }
 .section { padding-top: 120px; padding-bottom: 130px; }
 .section-heading { font-size: clamp(52px, 7vw, 108px); max-width: 1050px; margin: 28px 0 0; }
-.about-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .78fr); gap: 12vw; margin-top: 74px; }
-.about-lead { font-size: clamp(25px, 3vw, 45px); font-weight: 700; line-height: 1.15; margin: 0; }
+.about-grid { display: grid; grid-template-columns: minmax(0, .82fr) minmax(0, 1fr); gap: 9vw; margin-top: 74px; align-items: center; }
+.about-portrait { margin: 0; }
+.about-portrait img { width: 100%; height: auto; display: block; border-radius: 2px; filter: grayscale(8%) contrast(1.02); box-shadow: 0 30px 60px -28px oklch(0.09 0 0 / 0.5); }
+.about-portrait figcaption { font-size: 11px; letter-spacing: 0.12em; color: var(--muted-foreground); margin-top: 14px; }
+.about-text { min-width: 0; }
+.about-lead { font-size: clamp(25px, 3vw, 45px); font-weight: 700; line-height: 1.15; margin: 0 0 26px; }
 .about-copy { font-size: 18px; line-height: 1.65; color: var(--muted-foreground); margin: 0; }
 .about-copy + .about-copy { margin-top: 22px; }
 .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 55px; }

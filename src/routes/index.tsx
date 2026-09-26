@@ -12,6 +12,7 @@ import {
   skillGroups,
 } from "@/lib/portfolio-data";
 import heroSystem from "@/assets/hero-system.jpg";
+import portraitAsset from "@/assets/pooja-portrait.jpg.asset.json";
 
 const TITLE = "Pooja Bhagwat | Computer Science Engineer & MERN Stack Developer";
 const DESCRIPTION =
@@ -172,8 +173,17 @@ function Index() {
           THE WAY I BUILD.
         </h2>
         <div className="about-grid">
-          <p className="about-lead">Curiosity meets intention. Ideas meet working software.</p>
-          <div>
+          <figure className="about-portrait">
+            <img
+              src={portraitAsset.url}
+              alt="Portrait of Pooja Bhagwat in a black blazer and white shirt"
+              width={1254}
+              height={1254}
+            />
+            <figcaption className="mono">POOJA BHAGWAT · NASHIK, INDIA</figcaption>
+          </figure>
+          <div className="about-text">
+            <p className="about-lead">Curiosity meets intention. Ideas meet working software.</p>
             <p className="about-copy">
               I'm Pooja Bhagwat, a B.Tech Computer Science &amp; Engineering student at Sir Visvesvaraya Institute of
               Technology, Nashik, carrying a CGPA of 8.76 out of 10 after completing my Diploma in Computer Engineering
