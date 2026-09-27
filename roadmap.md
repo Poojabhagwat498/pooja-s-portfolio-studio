@@ -1,2 +1,6 @@
 - [x] Add a persistent dark-mode switch and adapt portfolio colors.
 - [x] Add a call-request form for +91 88300 77452 and verify its handoff.
+- [x] Add FoodMart project with live/source links; add links for Vaami's Creations and AI Learning Assistant.
+- [x] Build a full Portfolio page with case-study cards, linked from the nav.
+- [x] Sync experience/skills with the résumé document (no certifications listed in the résumé).
+- [ ] Community Matrimony live/source links — waiting on Pooja to share them.
