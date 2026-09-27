@@ -11,3 +11,5 @@
 
 - Keep the portfolio as a single editorial scrolling page with in-page section links, matching the requested reference site while avoiding fabricated credentials or contact details.
 - Store portfolio visual tokens and layout rules in `src/styles.css`; generated editorial images live under `src/assets/` for bundled rendering.
+- Call requests hand off a prefilled message to WhatsApp rather than implying confirmed availability, because no calendar service is connected.
+- Persist theme preference in browser storage and apply it to the root class, because the portfolio does not use accounts.
