@@ -1,0 +1,2 @@
+- [ ] Add a persistent dark-mode switch and adapt portfolio colors.
+- [ ] Add a call-request form for +91 88300 77452 and verify its handoff.
