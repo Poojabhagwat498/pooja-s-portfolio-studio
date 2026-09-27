@@ -56,8 +56,8 @@ export const projects: Project[] = [
         "Delivered a working storefront with a complete admin workflow",
         "Measured results not recorded yet",
       ],
-      liveUrl: "",
-      repoUrl: "",
+      liveUrl: "https://vaami-s-creation.vercel.app/",
+      repoUrl: "https://github.com/Poojabhagwat498/Vaami-s-Creation",
     },
   },
   {
@@ -89,8 +89,8 @@ export const projects: Project[] = [
         "Combined AI study help and live collaboration in one platform",
         "Measured results not recorded yet",
       ],
-      liveUrl: "",
-      repoUrl: "",
+      liveUrl: "https://ai-learning-assistant-frontend-phi.vercel.app/dashboard",
+      repoUrl: "https://github.com/Poojabhagwat498/Ai-learning-assistant",
     },
   },
   {
