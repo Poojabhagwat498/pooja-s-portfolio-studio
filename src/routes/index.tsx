@@ -3,6 +3,8 @@ import { ArrowDown, ArrowUpRight, Download, FileText, Mail, MapPin, Phone } from
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { WorkSection } from "@/components/WorkSection";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { BookCallDialog } from "@/components/BookCallDialog";
 import {
   RESUME_URL,
   achievements,
@@ -69,6 +71,7 @@ function Index() {
         <a className="nav-resume" href={RESUME_URL} download="Pooja-Bhagwat-Resume.pdf">
           Résumé
         </a>
+        <ThemeToggle />
         <Button asChild className="nav-cta">
           <a href="#contact">Let's Connect</a>
         </Button>
@@ -101,6 +104,7 @@ function Index() {
                 </a>
               </Button>
               <ResumeButton />
+              <BookCallDialog variant="outline" />
             </div>
             <p className="hero-file mono">PDF · UPDATED RÉSUMÉ</p>
           </div>
@@ -323,6 +327,7 @@ function Index() {
               <Button asChild variant="secondary">
                 <a href="#contact">Contact Me</a>
               </Button>
+              <BookCallDialog variant="secondary" />
             </div>
           </div>
         </div>
@@ -338,6 +343,7 @@ function Index() {
         <div className="contact-line">
           <p>Have a project in mind? Let's build something useful.</p>
           <div className="contact-details">
+            <BookCallDialog variant="outline" className="contact-book" />
             <a href={`mailto:${contact.email}`}>
               <Mail size={15} aria-hidden="true" /> {contact.email}
             </a>
