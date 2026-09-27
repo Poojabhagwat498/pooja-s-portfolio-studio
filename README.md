@@ -1,9 +1,5 @@
 # Pooja's Portfolio Studio
 
-https://austinmakasare.site/ create this same portfolio for pooja bhagwat
-
-This project was built with [Lovable](https://lovable.dev).
-
 ## Build with Lovable
 
 Continue developing this project in the [Lovable editor](https://lovable.dev/projects/5f159ee4-fb26-5649-8036-50327c228883).
