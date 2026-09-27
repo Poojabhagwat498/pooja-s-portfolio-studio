@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowUpRight, Download, FileText, Mail, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -66,6 +66,7 @@ function Index() {
         <a href="#about">About</a>
         <a href="#experience">Experience</a>
         <a href="#work">Projects</a>
+        <Link to="/portfolio">Portfolio</Link>
         <a href="#skills">Skills</a>
         <a href="#achievements">Awards</a>
         <a className="nav-resume" href={RESUME_URL} download="Pooja-Bhagwat-Resume.pdf">

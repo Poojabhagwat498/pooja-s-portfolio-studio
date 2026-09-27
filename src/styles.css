@@ -338,3 +338,7 @@
 .contact-details .contact-book { color: var(--surface-dark-foreground); border-color: color-mix(in oklab, var(--surface-dark-foreground) 50%, transparent); background: transparent; }
 .contact-details .contact-book:hover { background: color-mix(in oklab, var(--surface-dark-foreground) 15%, transparent); color: var(--surface-dark-foreground); }
 @media (max-width: 400px) { .booking-row { grid-template-columns: 1fr; } }
+
+.portfolio-hero { padding-top: 140px; }
+.portfolio-hero-copy { max-width: 560px; font-size: 16px; line-height: 1.6; color: var(--muted-foreground); margin: 18px 0 26px; }
+.portfolio-hero .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
