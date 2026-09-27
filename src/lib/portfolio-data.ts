@@ -127,6 +127,39 @@ export const projects: Project[] = [
       repoUrl: "",
     },
   },
+  {
+    id: "foodmart",
+    index: "04",
+    name: "FOODMART.",
+    kind: "GROCERY E-COMMERCE · REACT + EXPRESS",
+    tagline: "A modern grocery store with a full admin control room and AI-powered features.",
+    verified: true,
+    caseStudy: {
+      overview:
+        "A responsive grocery e-commerce platform built with React, TypeScript, Vite, Tailwind CSS and Express.js, covering the full shopping journey from browsing to order management.",
+      problem:
+        "Online grocery shopping needs fast browsing, a reliable cart and clear order tracking for customers — and a separate control panel so the store team can watch sales, customers and stock.",
+      solution:
+        "Built a typed React storefront with product browsing, cart, wishlist and authentication, backed by Express.js APIs, plus an admin dashboard with sales analytics, customer management, inventory monitoring, Cloudinary media handling and AI-powered functionality.",
+      features: [
+        "Product browsing with detailed pages",
+        "Cart and wishlist management",
+        "User authentication and order management",
+        "Admin dashboard with sales analytics",
+        "Customer management and inventory monitoring",
+        "Cloudinary integration for media",
+        "AI-powered functionality",
+        "Responsive design for desktop and mobile",
+      ],
+      stack: ["React", "TypeScript", "Vite", "Tailwind CSS", "Express.js", "Cloudinary"],
+      outcomes: [
+        "Delivered a complete storefront and admin dashboard",
+        "Measured results not recorded yet",
+      ],
+      liveUrl: "https://food-mart-mauve.vercel.app/",
+      repoUrl: "https://github.com/Poojabhagwat498/FoodMart",
+    },
+  },
 ];
 
 export const experience = {
