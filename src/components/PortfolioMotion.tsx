@@ -52,11 +52,20 @@ export function PortfolioMotion() {
         });
         animations.push(animation);
       });
-      cleanup = () => {
-        animations.forEach((animation) => {
-          animation.kill();
-          // GSAP kills its associated ScrollTrigger when the tween is killed.
+      if (window.matchMedia("(min-width: 901px)").matches) {
+        document.querySelectorAll<HTMLElement>(".portfolio .principles").forEach((section) => {
+          const trigger = ScrollTrigger.create({
+            trigger: section,
+            start: "top top",
+            end: "+=140",
+            pin: true,
+            anticipatePin: 1,
+          });
+          animations.push(trigger);
         });
+      }
+      cleanup = () => {
+        animations.forEach((animation) => animation.kill());
       };
     });
 
