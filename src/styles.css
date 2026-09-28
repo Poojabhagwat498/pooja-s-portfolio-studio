@@ -187,6 +187,7 @@
 .principle p { margin: 0; max-width: 440px; color: color-mix(in oklab, var(--surface-dark-foreground) 65%, transparent); line-height: 1.55; }
 .work-intro { display: flex; justify-content: space-between; align-items: end; gap: 24px; }
 .work-intro p { max-width: 280px; font-size: 15px; line-height: 1.5; color: var(--muted-foreground); }
+.work-count { display: inline-block; vertical-align: top; padding-top: .35em; font-size: clamp(16px, 1.8vw, 25px); color: var(--muted-foreground); }
 .work-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 65px; }
 .work-item { min-width: 0; }
 .work-image { display: grid; place-items: center; background: var(--muted); overflow: hidden; aspect-ratio: 1.43; }
