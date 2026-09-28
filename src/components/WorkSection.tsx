@@ -39,7 +39,12 @@ export function WorkSection() {
       const raw = localStorage.getItem(STORE_KEY);
       if (raw) {
         const saved = JSON.parse(raw) as Project[];
-        if (Array.isArray(saved) && saved.length) setItems(saved);
+        if (Array.isArray(saved) && saved.length) {
+          setItems(saved.map((project) => {
+            const current = baseProjects.find((base) => base.id === project.id);
+            return current && !project.image ? { ...project, image: current.image } : project;
+          }));
+        }
       }
     } catch {
       /* ignore unreadable saved content */

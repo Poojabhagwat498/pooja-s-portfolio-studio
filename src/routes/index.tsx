@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { WorkSection } from "@/components/WorkSection";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BookCallDialog } from "@/components/BookCallDialog";
+import { PortfolioMotion } from "@/components/PortfolioMotion";
 import {
   RESUME_URL,
   achievements,
@@ -13,7 +14,6 @@ import {
   experience,
   skillGroups,
 } from "@/lib/portfolio-data";
-import heroSystem from "@/assets/hero-system.jpg";
 import portraitAsset from "@/assets/pooja-portrait.jpg.asset.json";
 
 const TITLE = "Pooja Bhagwat | Computer Science Engineer & MERN Stack Developer";
@@ -55,6 +55,7 @@ function ResumeButton({ variant = "outline" }: { variant?: "default" | "outline"
 function Index() {
   return (
     <main id="top" className="portfolio">
+      <PortfolioMotion />
       <a href="#about" className="skip-link">
         Skip to content
       </a>
@@ -120,10 +121,10 @@ function Index() {
           <div>
             <div className="hero-art">
               <img
-                src={heroSystem}
-                alt="An interconnected arrangement of modern digital systems"
-                width={1408}
-                height={912}
+                src={portraitAsset.url}
+                alt="Pooja Bhagwat wearing a black blazer and white shirt"
+                width={1254}
+                height={1254}
               />
               <span className="art-chip top">
                 <span className="status-dot" /> FRONTEND · BACKEND
@@ -133,7 +134,7 @@ function Index() {
               </span>
             </div>
             <div className="art-caption">
-              → &nbsp; BUILDING FULL-STACK PRODUCTS,
+              → &nbsp; POOJA BHAGWAT · BUILDING FULL-STACK PRODUCTS,
               <br />
               &nbsp;&nbsp;&nbsp;&nbsp; ONE FEATURE AT A TIME.
             </div>
