@@ -42,7 +42,7 @@ export function WorkSection() {
         if (Array.isArray(saved) && saved.length) {
           setItems(saved.map((project) => {
             const current = baseProjects.find((base) => base.id === project.id);
-            return current && !project.image ? { ...project, image: current.image } : project;
+            return current?.image && !project.image ? { ...project, image: current.image } : project;
           }));
         }
       }

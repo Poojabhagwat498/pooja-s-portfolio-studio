@@ -42,7 +42,7 @@ export function PortfolioMotion() {
         animations.push(animation);
       });
       stats.forEach((stat) => {
-        const target = Number(stat.dataset.count);
+        const target = Number(stat.dataset['count']);
         if (!Number.isFinite(target)) return;
         const value = { current: 0 };
         const animation = gsap.to(value, {
