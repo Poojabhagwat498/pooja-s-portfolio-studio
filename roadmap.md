@@ -4,3 +4,5 @@
 - [x] Build a full Portfolio page with case-study cards, linked from the nav.
 - [x] Sync experience/skills with the résumé document (no certifications listed in the résumé).
 - [ ] Community Matrimony live/source links — waiting on Pooja to share them.
+- [x] Add FoodMart artwork and show Pooja's existing portrait prominently.
+- [x] Add smooth scrolling, scroll-triggered typography and project reveals, with reduced-motion support.

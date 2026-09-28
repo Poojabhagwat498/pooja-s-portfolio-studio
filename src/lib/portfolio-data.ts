@@ -1,6 +1,7 @@
 import jewelry from "@/assets/project-jewelry.jpg";
 import aiLearning from "@/assets/project-ai-learning.jpg";
 import matrimony from "@/assets/project-matrimony.jpg";
+import foodmart from "@/assets/project-foodmart.jpg";
 
 export const RESUME_URL = "/Pooja-Bhagwat-Resume.pdf";
 
@@ -133,6 +134,7 @@ export const projects: Project[] = [
     name: "FOODMART.",
     kind: "GROCERY E-COMMERCE · REACT + EXPRESS",
     tagline: "A modern grocery store with a full admin control room and AI-powered features.",
+    image: foodmart,
     verified: true,
     caseStudy: {
       overview:

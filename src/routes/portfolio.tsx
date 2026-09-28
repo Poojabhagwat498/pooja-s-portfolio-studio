@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { WorkSection } from "@/components/WorkSection";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { PortfolioMotion } from "@/components/PortfolioMotion";
 import { RESUME_URL } from "@/lib/portfolio-data";
 
 const TITLE = "Portfolio & Case Studies | Pooja Bhagwat";
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/portfolio")({
 function PortfolioPage() {
   return (
     <main id="top" className="portfolio">
+      <PortfolioMotion />
       <Toaster />
       <nav className="site-nav" aria-label="Portfolio navigation">
         <Link className="nav-mark" to="/" aria-label="Pooja Bhagwat, back to home">

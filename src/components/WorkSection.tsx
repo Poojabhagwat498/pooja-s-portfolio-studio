@@ -39,7 +39,12 @@ export function WorkSection() {
       const raw = localStorage.getItem(STORE_KEY);
       if (raw) {
         const saved = JSON.parse(raw) as Project[];
-        if (Array.isArray(saved) && saved.length) setItems(saved);
+        if (Array.isArray(saved) && saved.length) {
+          setItems(saved.map((project) => {
+            const current = baseProjects.find((base) => base.id === project.id);
+            return current?.image && !project.image ? { ...project, image: current.image } : project;
+          }));
+        }
       }
     } catch {
       /* ignore unreadable saved content */
@@ -64,7 +69,7 @@ export function WorkSection() {
       <p className="section-label">// FEATURED PROJECTS</p>
       <div className="work-intro">
         <h2 id="work-title" className="display section-heading">
-          THE WORK.
+          THE WORK. <span className="work-count mono" aria-label={`${items.length} projects`} data-count={items.length}>{String(items.length).padStart(2, "0")}</span>
         </h2>
         <p>Full-stack projects built end to end. Open a project to read its case study.</p>
       </div>
