@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { CalendarDays, ArrowUpRight } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,6 +25,9 @@ export function BookCallDialog({ variant = "default", className = "" }: { varian
     const message = `Hi Pooja, I'd like to request a call.\n\nName: ${name.trim()}\nPreferred time: ${formattedDate} at ${time} IST${topic.trim() ? `\nTopic: ${topic.trim()}` : ""}\n\nPlease let me know if that works for you.`;
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
     setOpen(false);
+    toast.success("Request ready in WhatsApp", {
+      description: "Your call request opened in WhatsApp — press send there and Pooja will confirm by reply.",
+    });
   }
 
   return (
