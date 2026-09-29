@@ -14,3 +14,4 @@
 - Call requests hand off a prefilled message to WhatsApp rather than implying confirmed availability, because no calendar service is connected.
 - Persist theme preference in browser storage and apply it to the root class, because the portfolio does not use accounts.
 - Use native smooth anchor scrolling and client-only GSAP ScrollTrigger decoration, because the content must remain accessible and visible before hydration and when motion is reduced.
+- Store blog posts in Lovable Cloud with public reads limited to published posts and all writes restricted to Pooja's authenticated email.

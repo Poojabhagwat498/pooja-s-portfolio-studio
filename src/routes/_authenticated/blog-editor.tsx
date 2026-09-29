@@ -13,6 +13,9 @@ const TITLE = "Write Blog Posts | Pooja Bhagwat";
 const DESCRIPTION = "Pooja Bhagwat's private portfolio blog writing area.";
 
 export const Route = createFileRoute("/_authenticated/blog-editor")({
+  beforeLoad: ({ context }) => {
+    if (context.user.email?.toLowerCase() !== "poojabhagwat2525@gmail.com") throw new Error("This writing area is for Pooja only.");
+  },
   head: () => ({ meta: [{ title: TITLE }, { name: "description", content: DESCRIPTION }, { property: "og:title", content: TITLE }, { property: "og:description", content: DESCRIPTION }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
   component: BlogEditor,
 });
@@ -54,7 +57,7 @@ function BlogEditor() {
             <div className="editor-actions"><Button variant="outline" onClick={() => submit("draft")} disabled={!title || !body}><Save size={15} /> Save draft</Button><Button onClick={() => submit("published")} disabled={!title || !body}>Publish post</Button>{id ? <Button variant="ghost" onClick={clear}>New post</Button> : null}</div>
           </div>
         </div>
-        <aside className="draft-list"><p className="section-label">// YOUR POSTS</p>{posts.length ? posts.map((post) => <button type="button" className="draft-item" key={post.id} onClick={() => edit(post)}><strong>{post.title}</strong><span className="mono">{post.status}</span></button>) : <p>No drafts yet.</p>}</aside>
+        <aside className="draft-list"><p className="section-label">// YOUR POSTS</p>{posts.length ? posts.map((post) => <Button type="button" variant="ghost" className="draft-item" key={post.id} onClick={() => edit(post)}><strong>{post.title}</strong><span className="mono">{post.status}</span></Button>) : <p>No drafts yet.</p>}</aside>
       </section>
     </main>
   );
