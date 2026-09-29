@@ -38,6 +38,7 @@ function PortfolioPage() {
         <Link to="/portfolio" activeProps={{ className: "font-bold" }}>
           Portfolio
         </Link>
+        <Link to="/blog">Blog</Link>
         <a className="nav-resume" href={RESUME_URL} download="Pooja-Bhagwat-Resume.pdf">
           Résumé
         </a>

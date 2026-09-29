@@ -69,6 +69,7 @@ function Index() {
         <a href="#experience">Experience</a>
         <a href="#work">Projects</a>
         <Link to="/portfolio">Portfolio</Link>
+        <Link to="/blog">Blog</Link>
         <a href="#skills">Skills</a>
         <a href="#achievements">Awards</a>
         <a className="nav-resume" href={RESUME_URL} download="Pooja-Bhagwat-Resume.pdf">

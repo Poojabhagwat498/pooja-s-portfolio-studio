@@ -6,3 +6,6 @@
 - [ ] Community Matrimony live/source links — waiting on Pooja to share them.
 - [x] Add FoodMart artwork and show Pooja's existing portrait prominently.
 - [x] Add smooth scrolling, scroll-triggered typography and project reveals, with reduced-motion support.
+- [x] Add public project blog and Pooja-only writing/publishing.
+- [x] Extend premium motion to About, Skills, and closing sections.
+- [x] Preserve the original hero-system artwork.

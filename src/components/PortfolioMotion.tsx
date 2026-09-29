@@ -16,7 +16,7 @@ export function PortfolioMotion() {
       const cards = document.querySelectorAll<HTMLElement>(".portfolio .work-item");
       const headings = document.querySelectorAll<HTMLElement>(".portfolio .section-heading, .portfolio .now h2, .portfolio .contact h2");
       const stats = document.querySelectorAll<HTMLElement>(".portfolio [data-count]");
-      const transitions = document.querySelectorAll<HTMLElement>(".portfolio .principles, .portfolio .now, .portfolio .contact");
+      const transitions = document.querySelectorAll<HTMLElement>(".portfolio .about-grid, .portfolio .skills-grid, .portfolio .principles, .portfolio .now, .portfolio .contact, .portfolio .blog-card");
       const animations: Array<{ kill: () => void }> = [];
 
       const hero = document.querySelector<HTMLElement>(".portfolio .hero");
@@ -38,7 +38,7 @@ export function PortfolioMotion() {
         animations.push(animation);
       });
       sections.forEach((section) => {
-        const targets = section.querySelectorAll<HTMLElement>(".section-label, .about-copy, .role, .principle, .skill-card, .education-item, .contact-line");
+        const targets = section.querySelectorAll<HTMLElement>(".section-label, .about-portrait, .about-lead, .about-copy, .about-actions, .role, .principle, .skill-card, .education-item, .now-grid > div, .contact-line, .blog-card");
         if (!targets.length) return;
         const animation = gsap.fromTo(targets, { y: 22, opacity: 0 }, {
           y: 0, opacity: 1, duration: .75, stagger: .06, ease: "power2.out",
