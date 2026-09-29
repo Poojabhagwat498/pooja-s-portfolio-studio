@@ -9,6 +9,3 @@
 - [x] Add public project blog and Pooja-only writing/publishing.
 - [x] Extend premium motion to About, Skills, and closing sections.
 - [x] Preserve the original hero-system artwork.
-- [ ] Add public project blog and Pooja-only writing/publishing.
-- [ ] Extend premium motion to About, Skills, and closing sections.
-- [ ] Preserve the original hero-system artwork.
