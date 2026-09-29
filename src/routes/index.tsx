@@ -15,6 +15,7 @@ import {
   skillGroups,
 } from "@/lib/portfolio-data";
 import portraitAsset from "@/assets/pooja-portrait.jpg.asset.json";
+import heroSystem from "@/assets/hero-system.jpg";
 
 const TITLE = "Pooja Bhagwat | Computer Science Engineer & MERN Stack Developer";
 const DESCRIPTION =
@@ -108,6 +109,20 @@ function Index() {
               <ResumeButton />
               <BookCallDialog variant="outline" />
             </div>
+            <div className="hero-stats" aria-label="Portfolio highlights">
+              <div>
+                <strong className="display" data-count="4">04</strong>
+                <span className="mono">SHIPPED PROJECTS</span>
+              </div>
+              <div>
+                <strong className="display" data-count="5">05</strong>
+                <span className="mono">SKILL GROUPS</span>
+              </div>
+              <div>
+                <strong className="display" data-count="1">01</strong>
+                <span className="mono">CURRENT INTERNSHIP</span>
+              </div>
+            </div>
             <p className="hero-file mono">PDF · UPDATED RÉSUMÉ</p>
           </div>
           <div className="hero-meta mono">
@@ -121,10 +136,10 @@ function Index() {
           <div>
             <div className="hero-art">
               <img
-                src={portraitAsset.url}
-                alt="Pooja Bhagwat wearing a black blazer and white shirt"
-                width={1254}
-                height={1254}
+                src={heroSystem}
+                alt="A connected modular computer system representing full-stack development"
+                width={1200}
+                height={768}
               />
               <span className="art-chip top">
                 <span className="status-dot" /> FRONTEND · BACKEND

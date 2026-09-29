@@ -16,7 +16,19 @@ export function PortfolioMotion() {
       const cards = document.querySelectorAll<HTMLElement>(".portfolio .work-item");
       const headings = document.querySelectorAll<HTMLElement>(".portfolio .section-heading, .portfolio .now h2, .portfolio .contact h2");
       const stats = document.querySelectorAll<HTMLElement>(".portfolio [data-count]");
+      const transitions = document.querySelectorAll<HTMLElement>(".portfolio .principles, .portfolio .now, .portfolio .contact");
       const animations: Array<{ kill: () => void }> = [];
+
+      const hero = document.querySelector<HTMLElement>(".portfolio .hero");
+      if (hero) {
+        const heroTimeline = gsap.timeline({ defaults: { ease: "power3.out" } });
+        heroTimeline
+          .fromTo(hero.querySelector(".hero-name"), { y: 58, opacity: 0 }, { y: 0, opacity: 1, duration: 1 })
+          .fromTo(hero.querySelectorAll(".hero-role, .hero-top .tag-row, .hero-actions, .hero-stats"), { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: .65, stagger: .08 }, "-=.55")
+          .fromTo(hero.querySelector(".hero-art"), { y: 34, scale: .96, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: .9 }, "-=.55")
+          .fromTo(hero.querySelectorAll(".hero-statement p, .hero-statement h2"), { y: 34, opacity: 0 }, { y: 0, opacity: 1, duration: .8, stagger: .1 }, "-=.65");
+        animations.push(heroTimeline);
+      }
 
       headings.forEach((heading) => {
         const animation = gsap.fromTo(heading, { y: 46, opacity: 0 }, {
@@ -38,6 +50,13 @@ export function PortfolioMotion() {
         const animation = gsap.fromTo(card, { y: 38, scale: .95, opacity: 0 }, {
           y: 0, scale: 1, opacity: 1, duration: .85, ease: "power3.out",
           scrollTrigger: { trigger: card, start: "top 90%", once: true },
+        });
+        animations.push(animation);
+      });
+      transitions.forEach((section) => {
+        const animation = gsap.fromTo(section, { y: 34, borderTopLeftRadius: 58, borderTopRightRadius: 58 }, {
+          y: 0, borderTopLeftRadius: 36, borderTopRightRadius: 36, duration: 1, ease: "power2.out",
+          scrollTrigger: { trigger: section, start: "top 94%", once: true },
         });
         animations.push(animation);
       });
