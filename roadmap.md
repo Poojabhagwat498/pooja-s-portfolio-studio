@@ -9,3 +9,4 @@
 - [x] Add public project blog and Pooja-only writing/publishing.
 - [x] Extend premium motion to About, Skills, and closing sections.
 - [x] Preserve the original hero-system artwork.
+- [x] Redesign the full portfolio with the cream, amber, brown, and near-black palette and a layered editorial hero.

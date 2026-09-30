@@ -85,12 +85,17 @@ function Index() {
       </div>
 
       <section className="hero page-gutter" aria-labelledby="hero-title">
+        <div className="hero-grid" aria-hidden="true" />
+        <div className="hero-side-rail mono" aria-hidden="true">
+          <span>01</span><span>FULL STACK</span><span>AI</span><span>WEB</span>
+        </div>
         <div className="hero-top">
           <div>
+            <p className="hero-kicker mono"><span className="status-dot" /> PORTFOLIO · 2026</p>
             <h1 id="hero-title" className="display hero-name">
               POOJA
               <br />
-              BHAGWAT
+              <span>BHAGWAT</span>
             </h1>
             <p className="hero-role mono">
               COMPUTER SCIENCE &amp; ENGINEERING STUDENT · MERN STACK DEVELOPER
@@ -127,6 +132,7 @@ function Index() {
             <p className="hero-file mono">PDF · UPDATED RÉSUMÉ</p>
           </div>
           <div className="hero-meta mono">
+            <span className="hero-index">PB / 01</span>
             <strong>MERN STACK DEVELOPER</strong>
             NASHIK / MAHARASHTRA, INDIA
             <br />
@@ -136,6 +142,8 @@ function Index() {
         <div className="hero-middle">
           <div>
             <div className="hero-art">
+              <span className="hero-orbit orbit-one" aria-hidden="true" />
+              <span className="hero-orbit orbit-two" aria-hidden="true" />
               <img
                 src={heroSystem}
                 alt="A connected modular computer system representing full-stack development"
