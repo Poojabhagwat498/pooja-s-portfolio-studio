@@ -543,6 +543,9 @@ body {
 .hero .tag { background: color-mix(in srgb, var(--ocean) 76%, transparent); border-color: color-mix(in srgb, var(--ivory) 40%, transparent); color: var(--ivory); }
 .hero .hero-actions [data-slot="button"] { border-color: var(--ivory); }
 .hero .hero-actions [data-slot="button"]:not([data-variant="outline"]) { background: var(--ivory); color: var(--ink); }
+.hero .hero-actions a, .hero .hero-actions button { color: var(--ink); }
+.hero .hero-actions [data-variant="outline"] { color: var(--ivory); background: transparent; }
+.hero .hero-actions [data-variant="outline"]:hover { background: var(--ivory); color: var(--ink); }
 .hero-index { border-color: var(--ivory); color: var(--ivory); }
 .hero-meta, .hero-meta strong { color: var(--ivory); }
 .hero-bottom span { color: var(--ivory); }
@@ -579,7 +582,7 @@ body {
 }
 @media (max-width: 600px) {
   .hero { min-height: 900px; padding-top: 105px; }
-  .hero-name { font-size: clamp(53px, 17vw, 82px); }
+  .hero-name { font-size: clamp(49px, 14vw, 72px); }
   .hero-middle { min-height: 330px; margin-top: 0; }
   .hero-statement { margin: 0 0 12px auto; }
   .hero-statement h2 { font-size: clamp(50px, 14vw, 78px); }
