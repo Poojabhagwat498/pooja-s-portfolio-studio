@@ -110,7 +110,7 @@ export function DriftingJellyfish() {
   }, [pathname]);
 
   return <Button type="button" variant="ghost" className={`jelly-float ${away ? "jelly-float-small" : ""}`} onClick={() => setExpanded((value) => !value)} aria-label={expanded ? "Shrink jellyfish" : "Enlarge jellyfish"} title={expanded ? "Shrink jellyfish" : "Enlarge jellyfish"}>
-    <Canvas dpr={[1, 1.5]} camera={{ position: [0, .35, 6.7], fov: 42 }} gl={{ alpha: true, antialias: true }}>
+    <Canvas dpr={[1, 1.5]} camera={{ position: [0, .35, 5.5], fov: 42 }} gl={{ alpha: true, antialias: true }}>
       <ambientLight intensity={1.15} />
       <pointLight position={[-2, 3, 3]} color="#C9F4FF" intensity={28} />
       <pointLight position={[3, -1, -2]} color="#377CC4" intensity={24} />

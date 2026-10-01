@@ -582,11 +582,12 @@ body {
 }
 @media (max-width: 600px) {
   .hero { min-height: 900px; padding-top: 105px; }
-  .hero-name { font-size: clamp(49px, 14vw, 72px); }
+  .hero-name { font-size: clamp(39px, 11.7vw, 48px); }
+  .hero-meta { display: none; }
   .hero-middle { min-height: 330px; margin-top: 0; }
   .hero-statement { margin: 0 0 12px auto; }
   .hero-statement h2 { font-size: clamp(50px, 14vw, 78px); }
-  .jelly-float { top: 35%; left: 50%; width: min(95vw, 390px); height: min(95vw, 390px); }
+  .jelly-float { top: 53%; left: 50%; width: min(95vw, 390px); height: min(95vw, 390px); }
   .jelly-float-small { top: auto; left: auto; bottom: 10px; right: 10px; width: 106px; height: 106px; }
 }
 @media (prefers-reduced-motion: reduce) { .jelly-float { transition: none; } }
