@@ -10,3 +10,5 @@
 - [x] Extend premium motion to About, Skills, and closing sections.
 - [x] Preserve the original hero-system artwork.
 - [x] Redesign the full portfolio with the cream, amber, brown, and near-black palette and a layered editorial hero.
+- [x] Replace the previous warm palette with the four requested navy/cream colors on all pages and both themes.
+- [x] Replace the home hero artwork with an interactive, rotating jellyfish that floats across all pages and changes size on click.

@@ -15,7 +15,6 @@ import {
   skillGroups,
 } from "@/lib/portfolio-data";
 import portraitAsset from "@/assets/pooja-portrait.jpg.asset.json";
-import heroSystem from "@/assets/hero-system.jpg";
 
 const TITLE = "Pooja Bhagwat | Computer Science Engineer & MERN Stack Developer";
 const DESCRIPTION =
@@ -140,29 +139,7 @@ function Index() {
           </div>
         </div>
         <div className="hero-middle">
-          <div>
-            <div className="hero-art">
-              <span className="hero-orbit orbit-one" aria-hidden="true" />
-              <span className="hero-orbit orbit-two" aria-hidden="true" />
-              <img
-                src={heroSystem}
-                alt="A connected modular computer system representing full-stack development"
-                width={1200}
-                height={768}
-              />
-              <span className="art-chip top">
-                <span className="status-dot" /> FRONTEND · BACKEND
-              </span>
-              <span className="art-chip bottom">
-                <span className="status-dot" /> AI INTEGRATED
-              </span>
-            </div>
-            <div className="art-caption">
-              → &nbsp; POOJA BHAGWAT · BUILDING FULL-STACK PRODUCTS,
-              <br />
-              &nbsp;&nbsp;&nbsp;&nbsp; ONE FEATURE AT A TIME.
-            </div>
-          </div>
+          <div className="jelly-caption mono">A LITTLE CURIOSITY<br />GOES A LONG WAY. &nbsp; ↗</div>
           <div className="hero-statement">
             <p>Full-stack development, AI-powered applications, and modern web technologies.</p>
             <h2 className="display">

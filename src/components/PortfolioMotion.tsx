@@ -26,21 +26,8 @@ export function PortfolioMotion() {
           .fromTo(hero.querySelector(".hero-kicker"), { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: .45 })
           .fromTo(hero.querySelector(".hero-name"), { y: 58, opacity: 0 }, { y: 0, opacity: 1, duration: 1 })
           .fromTo(hero.querySelectorAll(".hero-role, .hero-top .tag-row, .hero-actions, .hero-stats"), { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: .65, stagger: .08 }, "-=.55")
-          .fromTo(hero.querySelector(".hero-art"), { y: 34, scale: .96, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: .9 }, "-=.55")
           .fromTo(hero.querySelectorAll(".hero-statement p, .hero-statement h2, .hero-side-rail, .hero-meta"), { y: 34, opacity: 0 }, { y: 0, opacity: 1, duration: .8, stagger: .08 }, "-=.65");
         animations.push(heroTimeline);
-
-        const heroArt = hero.querySelector<HTMLElement>(".hero-art");
-        if (heroArt && window.matchMedia("(pointer: fine)").matches) {
-          const onPointerMove = (event: PointerEvent) => {
-            const x = (event.clientX / window.innerWidth - .5) * 12;
-            const y = (event.clientY / window.innerHeight - .5) * 10;
-            gsap.to(heroArt, { x, y, rotateY: x * .12, rotateX: -y * .1, duration: 1.2, ease: "power2.out" });
-          };
-          window.addEventListener("pointermove", onPointerMove);
-          const previousCleanup = cleanup;
-          cleanup = () => { previousCleanup?.(); window.removeEventListener("pointermove", onPointerMove); };
-        }
       }
 
       headings.forEach((heading) => {

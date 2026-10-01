@@ -15,4 +15,5 @@
 - Persist theme preference in browser storage and apply it to the root class, because the portfolio does not use accounts.
 - Use native smooth anchor scrolling and client-only GSAP ScrollTrigger decoration, because the content must remain accessible and visible before hydration and when motion is reduced.
 - Store blog posts in Lovable Cloud with public reads limited to published posts and all writes restricted to Pooja's authenticated email.
-- Use the warm cream/amber/brown/near-black token system with layered editorial sections across every portfolio route, so the visual identity remains cohesive.
+- Use the navy/cream token system with layered editorial sections across every portfolio route, so the visual identity stays cohesive in both themes.
+- Mount the animated 3D jellyfish once in the root layout and gate it until browser hydration, so it persists across pages without server-rendering WebGL.
