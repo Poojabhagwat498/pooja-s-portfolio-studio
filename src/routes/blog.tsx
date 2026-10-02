@@ -19,7 +19,7 @@ function BlogPage() {
     <main className="portfolio blog-page">
       <PortfolioMotion />
       <nav className="site-nav" aria-label="Blog navigation">
-        <Link className="nav-mark" to="/">P·B</Link><Link to="/">Home</Link><Link to="/portfolio">Portfolio</Link><Link to="/blog" activeProps={{ className: "font-bold" }}>Blog</Link>
+        <Link className="nav-mark" to="/">P·B</Link><Link to="/">Home</Link><Link to="/portfolio">Portfolio</Link><Link to="/blog" activeProps={{ className: "font-bold" }}>Blog</Link><Link to="/contact">Contact</Link>
         <Button asChild className="nav-cta"><Link to="/blog-editor"><PenLine size={14} /> Write</Link></Button>
       </nav>
       <header className="section page-gutter blog-hero">

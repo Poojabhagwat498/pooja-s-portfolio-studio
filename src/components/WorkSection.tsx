@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowUpRight, BadgeCheck, Loader2, Pencil, Sparkle } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, BadgeCheck, Loader2, Pencil, Sparkle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,6 +32,8 @@ export function WorkSection() {
   const [hydrated, setHydrated] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
+  const rollRef = useRef<HTMLDivElement>(null);
+  const [rollIndex, setRollIndex] = useState(0);
 
   useEffect(() => {
     setHydrated(true);
@@ -74,7 +76,18 @@ export function WorkSection() {
         <p>Full-stack projects built end to end. Open a project to read its case study.</p>
       </div>
 
-      <div className="work-grid">
+      <div className="work-roll-controls" aria-label="Project navigation">
+        <span className="mono">{String(rollIndex + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}</span>
+        <div>
+          <Button type="button" variant="outline" size="icon" aria-label="Previous project" disabled={rollIndex === 0} onClick={() => rollRef.current?.children[rollIndex - 1]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" })}><ArrowLeft size={17} /></Button>
+          <Button type="button" variant="outline" size="icon" aria-label="Next project" disabled={rollIndex >= items.length - 1} onClick={() => rollRef.current?.children[rollIndex + 1]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" })}><ArrowRight size={17} /></Button>
+        </div>
+      </div>
+      <div className="work-grid" ref={rollRef} role="region" aria-label="Projects, scroll horizontally" tabIndex={0} onScroll={(event) => {
+        const track = event.currentTarget;
+        const index = Array.from(track.children).reduce((closest, child, i) => Math.abs((child as HTMLElement).offsetLeft - track.scrollLeft - track.offsetLeft) < Math.abs((track.children[closest] as HTMLElement).offsetLeft - track.scrollLeft - track.offsetLeft) ? i : closest, 0);
+        setRollIndex(index);
+      }}>
         {items.map((project) => (
           <article className="work-item" key={project.id}>
             {project.image ? (
