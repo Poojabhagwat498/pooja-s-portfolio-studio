@@ -39,12 +39,13 @@ function PortfolioPage() {
           Portfolio
         </Link>
         <Link to="/blog">Blog</Link>
+        <Link to="/contact">Contact</Link>
         <a className="nav-resume" href={RESUME_URL} download="Pooja-Bhagwat-Resume.pdf">
           Résumé
         </a>
         <ThemeToggle />
         <Button asChild className="nav-cta">
-          <Link to="/" hash="contact">
+          <Link to="/contact">
             Let's Connect
           </Link>
         </Button>

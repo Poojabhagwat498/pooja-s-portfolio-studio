@@ -69,6 +69,7 @@ function Index() {
         <a href="#work">Projects</a>
         <Link to="/portfolio">Portfolio</Link>
         <Link to="/blog">Blog</Link>
+        <Link to="/contact">Contact</Link>
         <a href="#skills">Skills</a>
         <a href="#achievements">Awards</a>
         <a className="nav-resume" href={RESUME_URL} download="Pooja-Bhagwat-Resume.pdf">
@@ -76,7 +77,7 @@ function Index() {
         </a>
         <ThemeToggle />
         <Button asChild className="nav-cta">
-          <a href="#contact">Let's Connect</a>
+          <Link to="/contact">Let's Connect</Link>
         </Button>
       </nav>
       <div className="status-pill mono">
@@ -328,7 +329,7 @@ function Index() {
               </Button>
               <ResumeButton variant="secondary" />
               <Button asChild variant="secondary">
-                <a href="#contact">Contact Me</a>
+                <Link to="/contact">Contact Me</Link>
               </Button>
               <BookCallDialog variant="secondary" />
             </div>
@@ -346,6 +347,7 @@ function Index() {
         <div className="contact-line">
           <p>Have a project in mind? Let's build something useful.</p>
           <div className="contact-details">
+            <Button asChild variant="outline" className="contact-book"><Link to="/contact"><Mail size={15} aria-hidden="true" /> Send a message</Link></Button>
             <BookCallDialog variant="outline" className="contact-book" />
             <a href={`mailto:${contact.email}`}>
               <Mail size={15} aria-hidden="true" /> {contact.email}

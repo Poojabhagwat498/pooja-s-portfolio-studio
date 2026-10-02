@@ -12,3 +12,6 @@
 - [x] Redesign the full portfolio with the cream, amber, brown, and near-black palette and a layered editorial hero.
 - [x] Replace the previous warm palette with the four requested navy/cream colors on all pages and both themes.
 - [x] Replace the home hero artwork with an interactive, rotating jellyfish that floats across all pages and changes size on click.
+- [x] Add a direct-email contact form and Google Maps location on a dedicated page.
+- [x] Bring premium reveal motion to the Blog and a horizontal rolling project gallery.
+- [x] Refine jellyfish placement, name sizing, and phone layouts.

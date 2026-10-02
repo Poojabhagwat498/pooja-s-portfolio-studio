@@ -17,3 +17,5 @@
 - Store blog posts in Lovable Cloud with public reads limited to published posts and all writes restricted to Pooja's authenticated email.
 - Use the navy/cream token system with layered editorial sections across every portfolio route, so the visual identity stays cohesive in both themes.
 - Mount the animated 3D jellyfish once in the root layout and gate it until browser hydration, so it persists across pages without server-rendering WebGL.
+- Send contact submissions through a server function and the linked email provider, so delivery credentials stay off the public page.
+- Keep project browsing as a native horizontal snap-scrolling gallery with controls, so touch and keyboard navigation work without animation libraries.

@@ -13,10 +13,10 @@ export function PortfolioMotion() {
       gsap.registerPlugin(ScrollTrigger);
 
       const sections = document.querySelectorAll<HTMLElement>(".portfolio .section, .portfolio .now, .portfolio .contact");
-      const cards = document.querySelectorAll<HTMLElement>(".portfolio .work-item");
+      const cards = document.querySelectorAll<HTMLElement>(".portfolio .work-item, .portfolio .blog-card");
       const headings = document.querySelectorAll<HTMLElement>(".portfolio .section-heading, .portfolio .now h2, .portfolio .contact h2");
       const stats = document.querySelectorAll<HTMLElement>(".portfolio [data-count]");
-      const transitions = document.querySelectorAll<HTMLElement>(".portfolio .about-grid, .portfolio .skills-grid, .portfolio .principles, .portfolio .now, .portfolio .contact, .portfolio .blog-card");
+      const transitions = document.querySelectorAll<HTMLElement>(".portfolio .about-grid, .portfolio .skills-grid, .portfolio .principles, .portfolio .now, .portfolio .contact, .portfolio .blog-feed, .portfolio .contact-location");
       const animations: Array<{ kill: () => void }> = [];
 
       const hero = document.querySelector<HTMLElement>(".portfolio .hero");
@@ -38,7 +38,7 @@ export function PortfolioMotion() {
         animations.push(animation);
       });
       sections.forEach((section) => {
-        const targets = section.querySelectorAll<HTMLElement>(".section-label, .about-portrait, .about-lead, .about-copy, .about-actions, .role, .principle, .skill-card, .education-item, .now-grid > div, .contact-line, .blog-card");
+        const targets = section.querySelectorAll<HTMLElement>(".section-label, .about-portrait, .about-lead, .about-copy, .about-actions, .role, .principle, .skill-card, .education-item, .now-grid > div, .contact-line, .contact-copy, .contact-form, .blog-intro, .blog-empty");
         if (!targets.length) return;
         const animation = gsap.fromTo(targets, { y: 22, opacity: 0 }, {
           y: 0, opacity: 1, duration: .75, stagger: .06, ease: "power2.out",
@@ -47,8 +47,8 @@ export function PortfolioMotion() {
         animations.push(animation);
       });
       cards.forEach((card) => {
-        const animation = gsap.fromTo(card, { y: 38, scale: .95, opacity: 0 }, {
-          y: 0, scale: 1, opacity: 1, duration: .85, ease: "power3.out",
+        const animation = gsap.fromTo(card, { x: card.matches(".work-item") ? 55 : 0, y: card.matches(".blog-card") ? 38 : 0, scale: .95, opacity: 0 }, {
+          x: 0, y: 0, scale: 1, opacity: 1, duration: .85, ease: "power3.out",
           scrollTrigger: { trigger: card, start: "top 90%", once: true },
         });
         animations.push(animation);
