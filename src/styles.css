@@ -661,3 +661,9 @@ body {
   .jelly-float { top: clamp(420px, 54svh, 465px); width: min(70vw, 270px); height: min(70vw, 270px); }
   .jelly-float-small { top: calc(100svh - 92px); width: 76px; height: 76px; }
 }
+@media (max-width: 360px) {
+  .hero { min-height: 980px; }
+  .hero-middle { min-height: 420px; }
+  .jelly-float { top: 590px; width: 210px; height: 210px; }
+  .jelly-float-small { top: calc(100svh - 92px); width: 76px; height: 76px; }
+}
