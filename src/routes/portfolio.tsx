@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
+import { ProjectCoverflow } from "@/components/ProjectCoverflow";
 import { WorkSection } from "@/components/WorkSection";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PortfolioMotion } from "@/components/PortfolioMotion";
@@ -76,6 +77,7 @@ function PortfolioPage() {
         </div>
       </section>
 
+      <ProjectCoverflow />
       <WorkSection />
 
       <footer className="footer page-gutter">
