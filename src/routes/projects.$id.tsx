@@ -12,7 +12,7 @@ export const Route = createFileRoute("/projects/$id")({
   },
   head: ({ loaderData }) => {
     if (!loaderData) return { meta: [{ title: "Project not found" }, { name: "robots", content: "noindex" }] };
-    const p = projects[loaderData.index];
+    const p = projects[loaderData.index]!;
     const title = `${p.name.replace(/\.$/, "")} — Project by Pooja Bhagwat`;
     return {
       meta: [
@@ -40,10 +40,10 @@ function ProjectMissing() {
 
 function ProjectPage() {
   const { index } = Route.useLoaderData();
-  const p = projects[index];
+  const p = projects[index]!;
   const s = p.caseStudy;
-  const prev = projects[(index - 1 + projects.length) % projects.length];
-  const next = projects[(index + 1) % projects.length];
+  const prev = projects[(index - 1 + projects.length) % projects.length]!;
+  const next = projects[(index + 1) % projects.length]!;
 
   return (
     <main className="portfolio project-page">

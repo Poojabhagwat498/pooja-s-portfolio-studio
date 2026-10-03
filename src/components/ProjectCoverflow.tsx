@@ -8,7 +8,7 @@ export function ProjectCoverflow() {
   const [active, setActive] = useState(0);
   const count = projects.length;
   const go = (d: number) => setActive((i) => (i + d + count) % count);
-  const current = projects[active];
+  const current = projects[active]!;
 
   return (
     <section className="section page-gutter coverflow" aria-label="Project gallery">
