@@ -703,4 +703,3 @@ body {
 .dark .section-heading, .dark .display { color: var(--foreground); }
 .dark .experience .section-heading, .dark .experience .display { color: var(--ivory); }
 .dark .site-nav .nav-resume { color: var(--foreground); }
-.dark .footer { color: var(--foreground); }
