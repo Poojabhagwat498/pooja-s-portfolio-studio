@@ -1,24 +1,25 @@
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const KEY = "pb-color-theme";
+import { setTheme, THEME_EVENT, THEME_KEY } from "@/lib/theme";
 
 export function ThemeToggle() {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(KEY);
+    const saved = window.localStorage.getItem(THEME_KEY);
     const shouldUseDark = saved === "dark" || (saved === null && window.matchMedia("(prefers-color-scheme: dark)").matches);
     setDark(shouldUseDark);
     document.documentElement.classList.toggle("dark", shouldUseDark);
+    const update = (event: Event) => setDark((event as CustomEvent<boolean>).detail);
+    window.addEventListener(THEME_EVENT, update);
+    return () => window.removeEventListener(THEME_EVENT, update);
   }, []);
 
   function toggle() {
     const next = !dark;
     setDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    window.localStorage.setItem(KEY, next ? "dark" : "light");
+    setTheme(next);
   }
 
   return (
