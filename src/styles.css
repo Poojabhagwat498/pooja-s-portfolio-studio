@@ -705,7 +705,7 @@ body {
 .dark .site-nav .nav-resume { color: var(--foreground); }
 
 /* Shared editorial project grid replaces the horizontal roll on both pages. */
-.work-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 70px 24px; margin-top: 65px; overflow: visible; padding: 0; scroll-snap-type: none; }
+.work-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 70px 24px; margin-top: 65px; overflow: visible; padding: 0; scroll-snap-type: none; min-width: 0; }
 .work-item, .work-item:nth-child(even), .work-item:nth-child(3n) { flex: initial; width: auto; grid-column: span 7; }
 .work-item:nth-child(even) { grid-column: 6 / span 7; }
 .work-item:nth-child(3n) { grid-column: 2 / span 7; }
@@ -722,6 +722,6 @@ body {
 .skill-selected { min-height: 22px; margin: 14px 0 0; font-size: 12px; color: var(--ivory); }
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 ::view-transition-new(root) { z-index: 9999; }
-@media (max-width: 900px) { .work-item, .work-item:nth-child(even), .work-item:nth-child(3n) { grid-column: span 12; } }
-@media (max-width: 600px) { .work-grid { gap: 55px; } .skill-symbol { width: 58px; height: 58px; } }
+@media (max-width: 900px) { .work-grid { grid-template-columns: minmax(0, 1fr); } .work-item, .work-item:nth-child(even), .work-item:nth-child(3n) { grid-column: 1 / -1; min-width: 0; } }
+@media (max-width: 600px) { .work-grid { gap: 55px; } .work-item h3 { font-size: clamp(24px, 7.5vw, 40px); overflow-wrap: anywhere; } .skill-symbol { width: 58px; height: 58px; } }
 @media (prefers-reduced-motion: reduce) { .interactive-project-button::before, .interactive-project-button svg, .skill-symbol { transition: none; } }
