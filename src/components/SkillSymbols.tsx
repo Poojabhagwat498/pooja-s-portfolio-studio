@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { skillGroups } from "@/lib/portfolio-data";
-import { SiAmazonwebservices, SiBootstrap, SiCss, SiDocker, SiExpress, SiGit, SiGithub, SiHtml5, SiJavascript, SiLinux, SiMongodb, SiMysql, SiNextdotjs, SiNodedotjs, SiPostgresql, SiPrisma, SiReact, SiSpringboot, SiTailwindcss, SiTypescript } from "react-icons/si";
+import { SiBootstrap, SiCss, SiDocker, SiExpress, SiGit, SiGithub, SiHtml5, SiJavascript, SiLinux, SiMongodb, SiMysql, SiNextdotjs, SiNodedotjs, SiPostgresql, SiPrisma, SiReact, SiSpringboot, SiTailwindcss, SiTypescript } from "react-icons/si";
 import { FaJava } from "react-icons/fa";
 import { Cloud, Code2, Database, Network, Workflow } from "lucide-react";
 import type { ComponentType } from "react";
@@ -11,7 +11,7 @@ const icons: Record<string, ComponentType<{ size?: number }>> = {
   React: SiReact, "React.js": SiReact, "Next.js": SiNextdotjs, "Node.js": SiNodedotjs,
   "Express.js": SiExpress, "Spring Boot": SiSpringboot, Bootstrap: SiBootstrap,
   "Tailwind CSS": SiTailwindcss, MongoDB: SiMongodb, "PostgreSQL (Prisma)": SiPostgresql,
-  PostgreSQL: SiPostgresql, MySQL: SiMysql, Linux: SiLinux, AWS: SiAmazonwebservices,
+  PostgreSQL: SiPostgresql, MySQL: SiMysql, Linux: SiLinux, AWS: Cloud,
   Git: SiGit, GitHub: SiGithub, TypeScript: SiTypescript, Prisma: SiPrisma,
   Docker: SiDocker, "Object-Oriented Programming": Code2,
   "Data Structures & Algorithms": Workflow, "Operating Systems": Cloud,

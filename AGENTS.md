@@ -18,6 +18,5 @@
 - Use the navy/cream token system with layered editorial sections across every portfolio route, so the visual identity stays cohesive in both themes.
 - Mount the animated 3D jellyfish once in the root layout and gate it until browser hydration, so it persists across pages without server-rendering WebGL.
 - Send contact submissions through a server function and the linked email provider, so delivery credentials stay off the public page.
-- Keep project browsing as a native horizontal snap-scrolling gallery with controls, so touch and keyboard navigation work without animation libraries.
 - Keep the home and Portfolio work listings as the same editorial grid; only the Portfolio's separate coverflow is carousel-based, because projects should not roll horizontally in the work section.
 - Share theme state through a browser event and persistent storage, because the jellyfish and navigation switch must stay synchronized across pages.
