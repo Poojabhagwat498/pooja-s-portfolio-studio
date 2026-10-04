@@ -13,7 +13,7 @@
 - [x] Replace the previous warm palette with the four requested navy/cream colors on all pages and both themes.
 - [x] Replace the home hero artwork with an interactive, rotating jellyfish that floats across all pages and changes size on click.
 - [x] Add a direct-email contact form and Google Maps location on a dedicated page.
-- [x] Bring premium reveal motion to the Blog and a horizontal rolling project gallery.
+- [x] Bring premium reveal motion to the Blog and a coverflow project gallery on Portfolio.
 - [x] Refine jellyfish placement, name sizing, and phone layouts.
 - [x] Use the same non-rolling editorial work grid on home and Portfolio, with interactive project links.
 - [x] Add clickable technology symbols with names and backlight feedback.

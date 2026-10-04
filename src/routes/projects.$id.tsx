@@ -3,7 +3,6 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { projects } from "@/lib/portfolio-data";
-import { InteractiveProjectButton } from "@/components/InteractiveProjectButton";
 
 export const Route = createFileRoute("/projects/$id")({
   loader: ({ params }) => {
@@ -78,7 +77,6 @@ function ProjectPage() {
         <Link to="/projects/$id" params={{ id: prev.id }}><ArrowLeft size={16} /> {prev.name}</Link>
         <Link to="/projects/$id" params={{ id: next.id }}>{next.name} <ArrowRight size={16} /></Link>
       </nav>
-      <div className="page-gutter"><InteractiveProjectButton id={next.id} label="View next project" /></div>
       <footer className="footer page-gutter"><Link to="/portfolio"><ArrowLeft size={14} /> ALL PROJECTS</Link><span>© {new Date().getFullYear()} POOJA BHAGWAT</span></footer>
     </main>
   );
