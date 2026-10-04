@@ -1,9 +1,12 @@
+"use client";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Lightformer, Environment } from "@react-three/drei";
 import { useRouterState } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import * as THREE from "three";
+import { setTheme } from "@/lib/theme";
 
 const TENTACLES = Array.from({ length: 18 }, (_, i) => i);
 
@@ -11,6 +14,7 @@ function Jellyfish({ expanded, still }: { expanded: boolean; still: boolean }) {
   const body = useRef<THREE.Group>(null);
   const crown = useRef<THREE.Group>(null);
   const tendrils = useRef<THREE.Group>(null);
+  const oralArms = useRef<THREE.Group>(null);
   const bell = useMemo(() => {
     const profile = [
       [0, 1.06], [.18, 1.05], [.38, .99], [.61, .83], [.78, .58],
@@ -33,14 +37,33 @@ function Jellyfish({ expanded, still }: { expanded: boolean; still: boolean }) {
     });
     return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points), 32, outer ? .014 : .025, 5, false);
   }), []);
+  const arms = useMemo(() => Array.from({ length: 6 }, (_, i) => {
+    const angle = i * Math.PI / 3;
+    const points = Array.from({ length: 14 }, (_, j) => {
+      const t = j / 13;
+      return new THREE.Vector3(Math.cos(angle) * (.13 + .2 * t) + Math.sin(t * 13 + i) * .07 * t, -.18 - 2.5 * t, Math.sin(angle) * (.13 + .2 * t) + Math.cos(t * 12 + i) * .07 * t);
+    });
+    return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points), 48, .057, 6, false);
+  }), []);
+  const veins = useMemo(() => Array.from({ length: 16 }, (_, i) => {
+    const angle = i / 16 * Math.PI * 2;
+    return new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, 1.04, 0),
+      new THREE.Vector3(Math.cos(angle) * .42, .94, Math.sin(angle) * .42),
+      new THREE.Vector3(Math.cos(angle) * .78, .5, Math.sin(angle) * .78),
+      new THREE.Vector3(Math.cos(angle) * .86, -.08, Math.sin(angle) * .86),
+    ]), 24, .009, 4, false);
+  }), []);
 
   useEffect(() => () => {
     bell.dispose();
     strands.forEach((strand) => strand.dispose());
-  }, [bell, strands]);
+    arms.forEach((arm) => arm.dispose());
+    veins.forEach((vein) => vein.dispose());
+  }, [bell, strands, arms, veins]);
 
   useFrame(({ clock }, rawDelta) => {
-    if (!body.current || !crown.current || !tendrils.current || still) return;
+    if (!body.current || !crown.current || !tendrils.current || !oralArms.current || still) return;
     const dt = Math.min(rawDelta, .05);
     const time = clock.elapsedTime;
     body.current.rotation.y += dt * .48;
@@ -49,6 +72,7 @@ function Jellyfish({ expanded, still }: { expanded: boolean; still: boolean }) {
     crown.current.scale.set(1 + Math.sin(time * 2.2) * .035, 1 - Math.sin(time * 2.2) * .065, 1 + Math.sin(time * 2.2) * .035);
     tendrils.current.rotation.z = Math.sin(time * 1.3) * .07;
     tendrils.current.rotation.x = Math.cos(time * .9) * .075;
+    oralArms.current.rotation.y = Math.sin(time * .7) * .18;
     body.current.scale.setScalar(THREE.MathUtils.damp(body.current.scale.x, expanded ? 1.3 : 1, 5, dt));
   });
 
@@ -56,24 +80,15 @@ function Jellyfish({ expanded, still }: { expanded: boolean; still: boolean }) {
     <group ref={body} rotation={[.13, -.45, -.22]} position={[0, .9, 0]} scale={expanded && still ? 1.3 : 1}>
       <group ref={crown}>
         <mesh geometry={bell}>
-          <meshPhysicalMaterial color="#C9F4FF" emissive="#377CC4" emissiveIntensity={.27} transparent opacity={.47} side={THREE.DoubleSide} roughness={.22} metalness={.12} depthWrite={false} />
+          <meshPhysicalMaterial color="#D5F9FF" emissive="#377CC4" emissiveIntensity={.3} transparent opacity={.65} side={THREE.DoubleSide} roughness={.12} metalness={.08} clearcoat={1} clearcoatRoughness={.06} transmission={.25} thickness={.7} depthWrite={false} />
         </mesh>
         <mesh position={[0, .42, 0]} scale={[.67, .46, .67]}>
           <sphereGeometry args={[1, 32, 24]} />
           <meshPhysicalMaterial color="#F0FDFF" emissive="#98DCFF" emissiveIntensity={.4} transparent opacity={.26} depthWrite={false} />
         </mesh>
-        {Array.from({ length: 16 }, (_, i) => {
-          const angle = i / 16 * Math.PI * 2;
-          const curve = new THREE.CatmullRomCurve3([
-            new THREE.Vector3(0, 1.04, 0),
-            new THREE.Vector3(Math.cos(angle) * .42, .94, Math.sin(angle) * .42),
-            new THREE.Vector3(Math.cos(angle) * .78, .5, Math.sin(angle) * .78),
-            new THREE.Vector3(Math.cos(angle) * .86, -.08, Math.sin(angle) * .86),
-          ]);
-          return <mesh key={i} geometry={new THREE.TubeGeometry(curve, 24, .009, 4, false)}>
+        {veins.map((geometry, i) => <mesh key={i} geometry={geometry}>
             <meshBasicMaterial color="#C6F3FF" transparent opacity={.64} depthWrite={false} />
-          </mesh>;
-        })}
+          </mesh>)}
         <mesh position-y={-.08} rotation-x={Math.PI / 2}>
           <torusGeometry args={[.81, .026, 8, 64]} />
           <meshBasicMaterial color="#B8F0FF" transparent opacity={.8} depthWrite={false} />
@@ -82,6 +97,11 @@ function Jellyfish({ expanded, still }: { expanded: boolean; still: boolean }) {
       <group ref={tendrils}>
         {strands.map((geometry, i) => <mesh key={i} geometry={geometry}>
           <meshBasicMaterial color={i % 3 === 0 ? "#B7F8FF" : "#5ACBFF"} transparent opacity={i < 10 ? .72 : .47} depthWrite={false} />
+        </mesh>)}
+      </group>
+      <group ref={oralArms}>
+        {arms.map((geometry, i) => <mesh key={i} geometry={geometry}>
+          <meshPhysicalMaterial color="#B8DFF9" emissive="#529EE3" emissiveIntensity={.22} transparent opacity={.38} side={THREE.DoubleSide} depthWrite={false} />
         </mesh>)}
       </group>
     </group>
@@ -109,7 +129,10 @@ export function DriftingJellyfish() {
     return () => { window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
   }, [pathname]);
 
-  return <Button type="button" variant="ghost" className={`jelly-float ${away ? "jelly-float-small" : ""}`} onClick={() => setExpanded((value) => !value)} aria-label={expanded ? "Shrink jellyfish" : "Enlarge jellyfish"} title={expanded ? "Shrink jellyfish" : "Enlarge jellyfish"}>
+  return <Button type="button" variant="ghost" className={`jelly-float ${away ? "jelly-float-small" : ""}`} onClick={(event) => {
+    setExpanded((value) => !value);
+    setTheme(!document.documentElement.classList.contains("dark"), { x: event.clientX, y: event.clientY });
+  }} aria-label="Toggle dark mode with jellyfish" title="Toggle dark mode with jellyfish">
     <Canvas dpr={[1, 1.5]} camera={{ position: [0, .35, 5.5], fov: 42 }} gl={{ alpha: true, antialias: true }}>
       <ambientLight intensity={1.15} />
       <pointLight position={[-2, 3, 3]} color="#C9F4FF" intensity={28} />

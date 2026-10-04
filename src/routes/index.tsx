@@ -3,6 +3,7 @@ import { ArrowDown, ArrowUpRight, Download, FileText, Mail, MapPin, Phone } from
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { WorkSection } from "@/components/WorkSection";
+import { SkillSymbols } from "@/components/SkillSymbols";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BookCallDialog } from "@/components/BookCallDialog";
 import { PortfolioMotion } from "@/components/PortfolioMotion";
@@ -12,7 +13,6 @@ import {
   contact,
   education,
   experience,
-  skillGroups,
 } from "@/lib/portfolio-data";
 import portraitAsset from "@/assets/pooja-portrait.jpg.asset.json";
 
@@ -279,20 +279,7 @@ function Index() {
           <br />
           WITH.
         </h2>
-        <div className="skills-grid">
-          {skillGroups.map(([group, items]) => (
-            <div className="skill-card" key={group}>
-              <span className="number mono">{group}</span>
-              <div className="tag-row">
-                {items.map((item) => (
-                  <span className="tag" key={item}>
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        <SkillSymbols />
       </section>
 
       <section id="achievements" className="section page-gutter principles" aria-labelledby="achievements-title">
