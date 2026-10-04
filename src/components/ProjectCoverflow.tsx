@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { projects } from "@/lib/portfolio-data";
+import { InteractiveProjectButton } from "@/components/InteractiveProjectButton";
 
 export function ProjectCoverflow() {
   const [active, setActive] = useState(0);
@@ -49,9 +50,7 @@ export function ProjectCoverflow() {
         <div>
           <p className="mono">{current.index} / {current.kind}</p>
           <h2 className="display">{current.name}</h2>
-          <Button asChild className="mt-3">
-            <Link to="/projects/$id" params={{ id: current.id }}>Open full project <ArrowUpRight size={15} aria-hidden="true" /></Link>
-          </Button>
+          <InteractiveProjectButton id={current.id} label="View project" />
         </div>
         <Button variant="outline" size="icon" onClick={() => go(1)} aria-label="Next project"><ArrowRight /></Button>
       </div>
