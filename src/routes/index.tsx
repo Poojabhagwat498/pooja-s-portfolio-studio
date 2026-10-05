@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowUpRight, Download, FileText, Mail, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
-import { WorkSection } from "@/components/WorkSection";
+import { ProjectCoverflow } from "@/components/ProjectCoverflow";
 import { SkillSymbols } from "@/components/SkillSymbols";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BookCallDialog } from "@/components/BookCallDialog";
@@ -66,7 +66,7 @@ function Index() {
         </a>
         <a href="#about">About</a>
         <a href="#experience">Experience</a>
-        <a href="#work">Projects</a>
+        <a href="#projects">Projects</a>
         <Link to="/portfolio">Portfolio</Link>
         <Link to="/blog">Blog</Link>
         <Link to="/contact">Contact</Link>
@@ -108,7 +108,7 @@ function Index() {
             </div>
             <div className="hero-actions">
               <Button asChild>
-                <a href="#work">
+                <a href="#projects">
                   View Projects <ArrowUpRight aria-hidden="true" />
                 </a>
               </Button>
@@ -270,7 +270,7 @@ function Index() {
         </div>
       </section>
 
-      <WorkSection />
+      <ProjectCoverflow />
 
       <section id="skills" className="section page-gutter expertise" aria-labelledby="skills-title">
         <p className="section-label">// SKILLS</p>
@@ -312,7 +312,7 @@ function Index() {
             <p>Interested in working together or exploring one of my projects?</p>
             <div className="now-actions">
               <Button asChild>
-                <a href="#work">View Projects</a>
+                <a href="#projects">View Projects</a>
               </Button>
               <ResumeButton variant="secondary" />
               <Button asChild variant="secondary">

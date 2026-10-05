@@ -15,6 +15,8 @@
 - [x] Add a direct-email contact form and Google Maps location on a dedicated page.
 - [x] Bring premium reveal motion to the Blog and a coverflow project gallery on Portfolio.
 - [x] Refine jellyfish placement, name sizing, and phone layouts.
-- [x] Use the same non-rolling editorial work grid on home and Portfolio, with interactive project links.
+- [ ] Replace the Work listing with the shared case-by-case gallery on Home and Portfolio.
+- [ ] Correct theme contrast and persistence across all pages and controls.
+- [ ] Replace the jellyfish with the uploaded shader-based version and verify its rendering.
 - [x] Add clickable technology symbols with names and backlight feedback.
 - [x] Toggle dark mode by clicking the improved jellyfish with a circular reveal.

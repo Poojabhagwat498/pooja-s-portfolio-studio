@@ -8,11 +8,13 @@ export function ProjectCoverflow() {
   const [active, setActive] = useState(0);
   const count = projects.length;
   const go = (d: number) => setActive((i) => (i + d + count) % count);
-  const current = projects[active]!;
+  const current = projects[active];
+  if (!current) return null;
 
   return (
-    <section className="section page-gutter coverflow" aria-label="Project gallery">
-      <p className="section-label">// GALLERY</p>
+    <section id="projects" className="section page-gutter coverflow" aria-labelledby="case-gallery-title">
+      <p className="section-label">// CASE STUDIES</p>
+      <h2 id="case-gallery-title" className="display section-heading">EVERY PROJECT,<br />CASE BY CASE.</h2>
       <div
         className="coverflow-stage"
         tabIndex={0}
@@ -26,7 +28,7 @@ export function ProjectCoverflow() {
           if (off < -count / 2) off += count;
           const abs = Math.abs(off);
           return (
-            <button
+            <Button variant="ghost"
               key={p.id}
               type="button"
               className="coverflow-card"
@@ -40,7 +42,7 @@ export function ProjectCoverflow() {
               }}
             >
               {p.image ? <img src={p.image} alt={p.name} loading="lazy" /> : <span className="display">{p.name}</span>}
-            </button>
+            </Button>
           );
         })}
       </div>

@@ -4,7 +4,7 @@ export const THEME_EVENT = "pb-theme-change";
 export function setTheme(dark: boolean, origin?: { x: number; y: number }) {
   const apply = () => {
     document.documentElement.classList.toggle("dark", dark);
-    window.localStorage.setItem(THEME_KEY, dark ? "dark" : "light");
+    try { window.localStorage.setItem(THEME_KEY, dark ? "dark" : "light"); } catch { /* keep theme usable without storage */ }
     window.dispatchEvent(new CustomEvent(THEME_EVENT, { detail: dark }));
   };
 
