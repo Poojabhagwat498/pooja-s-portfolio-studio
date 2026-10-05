@@ -3,7 +3,6 @@ import { ArrowLeft, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { ProjectCoverflow } from "@/components/ProjectCoverflow";
-import { WorkSection } from "@/components/WorkSection";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PortfolioMotion } from "@/components/PortfolioMotion";
 import { RESUME_URL } from "@/lib/portfolio-data";
@@ -60,8 +59,7 @@ function PortfolioPage() {
           CASE BY CASE.
         </h1>
         <p className="portfolio-hero-copy">
-          Each card below is a full case study — the problem, the build, the stack and the outcome. Open one to read
-          it, edit it, or add a new study with the writing assistant.
+           Full-stack applications, thoughtful interfaces, and AI-powered experiences — from the first idea to the final build.
         </p>
         <div className="hero-actions">
           <Button asChild variant="outline">
@@ -78,7 +76,6 @@ function PortfolioPage() {
       </section>
 
       <ProjectCoverflow />
-      <WorkSection />
 
       <footer className="footer page-gutter">
         <span>© {new Date().getFullYear()} POOJA BHAGWAT</span>

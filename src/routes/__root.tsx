@@ -13,6 +13,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { DriftingJellyfish } from "../components/DriftingJellyfish";
+import { setTheme, THEME_KEY } from "../lib/theme";
 
 function NotFoundComponent() {
   return (
@@ -120,7 +121,13 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-color-scheme: dark)");
+    let saved: string | null = null;
+    try { saved = window.localStorage.getItem(THEME_KEY); } catch { /* storage is optional */ }
+    setTheme(saved === "dark" || (saved === null && preference.matches));
+    setMounted(true);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
