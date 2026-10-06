@@ -518,7 +518,7 @@ export function DriftingJellyfish() {
       if (element && phone.matches) {
         const slot = pathname === "/" ? document.querySelector(".jelly-hero-slot") : null;
         const rect = slot?.getBoundingClientRect();
-        const inHero = Boolean(rect && rect.bottom > 100 && rect.top < window.innerHeight - 40);
+        const inHero = Boolean(rect && rect.top >= 100 && rect.top < window.innerHeight - 40);
         const size = inHero ? 260 : 64;
         const target = inHero && rect
           ? { x: rect.left + (rect.width - size) / 2, y: rect.top + (rect.height - size) / 2, size }
