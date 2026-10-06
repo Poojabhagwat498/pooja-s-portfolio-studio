@@ -24,7 +24,6 @@ export function PortfolioMotion() {
         const heroTimeline = gsap.timeline({ defaults: { ease: "power3.out" } });
         heroTimeline
           .fromTo(hero.querySelector(".hero-kicker"), { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: .45 })
-          .fromTo(hero.querySelector(".hero-name"), { y: 58, opacity: 0 }, { y: 0, opacity: 1, duration: 1 })
           .fromTo(hero.querySelectorAll(".hero-role, .hero-top .tag-row, .hero-actions, .hero-stats"), { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: .65, stagger: .08 }, "-=.55")
           .fromTo(hero.querySelectorAll(".hero-statement p, .hero-statement h2, .hero-side-rail, .hero-meta"), { y: 34, opacity: 0 }, { y: 0, opacity: 1, duration: .8, stagger: .08 }, "-=.65");
         animations.push(heroTimeline);

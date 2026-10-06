@@ -20,3 +20,4 @@
 - [x] Replace the jellyfish with the uploaded shader-based version and verify its rendering.
 - [x] Add clickable technology symbols with names and backlight feedback.
 - [x] Toggle dark mode by clicking the improved jellyfish with a circular reveal.
+- [ ] Add Pooja’s staggered 3D name flip and apply the latest uploaded jellyfish with smooth, button-safe phone positioning.

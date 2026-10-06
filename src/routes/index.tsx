@@ -7,6 +7,7 @@ import { SkillSymbols } from "@/components/SkillSymbols";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BookCallDialog } from "@/components/BookCallDialog";
 import { PortfolioMotion } from "@/components/PortfolioMotion";
+import Text3DFlip from "@/components/Text3DFlip";
 import {
   RESUME_URL,
   achievements,
@@ -93,9 +94,7 @@ function Index() {
           <div>
             <p className="hero-kicker mono"><span className="status-dot" /> PORTFOLIO · 2026</p>
             <h1 id="hero-title" className="display hero-name">
-              POOJA
-              <br />
-              <span>BHAGWAT</span>
+              <Text3DFlip>POOJA BHAGWAT</Text3DFlip>
             </h1>
             <p className="hero-role mono">
               COMPUTER SCIENCE &amp; ENGINEERING STUDENT · MERN STACK DEVELOPER
@@ -140,6 +139,7 @@ function Index() {
           </div>
         </div>
         <div className="hero-middle">
+          <div className="jelly-hero-slot" aria-hidden="true" />
           <div className="jelly-caption mono">A LITTLE CURIOSITY<br />GOES A LONG WAY. &nbsp; ↗</div>
           <div className="hero-statement">
             <p>Full-stack development, AI-powered applications, and modern web technologies.</p>
