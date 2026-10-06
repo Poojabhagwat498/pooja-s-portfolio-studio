@@ -39,6 +39,8 @@ const BELL_FRAG = /* glsl */ `
 varying vec3 vN;
 varying vec3 vV;
 varying vec3 vP;
+uniform float uTime;
+uniform float uFade;
 float hash(vec3 p) {
   p = fract(p * 0.3183099 + 0.1);
   p *= 17.0;
@@ -68,13 +70,14 @@ void main() {
   // glowing margin band
   float band = 1.0 - smoothstep(0.0, 0.16, vP.y + 0.1);
 
-  col += canal * vec3(0.45, 0.65, 1.0) * 0.55;
+  float wave = 0.5 + 0.5 * sin(h * 10.0 - uTime * 3.5); // light travelling down the canals
+  col += canal * vec3(0.45, 0.65, 1.0) * (0.35 + 0.9 * wave);
   col += spots * vec3(0.9, 1.0, 1.0) * 0.8;
   col += band * vec3(0.95, 0.65, 1.0) * 0.55;
   col += stria;
 
   float alpha = 0.2 + fr * 0.6 + canal * 0.3 + spots * 0.5 + band * 0.45;
-  gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.92));
+  gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.92) * uFade);
 }`;
 
 const STRAND_VERT = /* glsl */ `
@@ -104,6 +107,8 @@ uniform vec3 uColor2;
 uniform float uAlpha;
 uniform float uLen;
 uniform float uBead;
+uniform float uTime;
+uniform float uFade;
 varying float vDepth;
 varying vec3 vN;
 varying vec3 vV;
@@ -115,8 +120,22 @@ void main() {
   vec3 col = mix(uColor, uColor2, k);
   float bead = pow(0.5 + 0.5 * sin(vDepth * 42.0), 8.0) * uBead;
   col += bead * 0.5;
-  float a = uAlpha * (0.4 + 0.6 * fr) * (1.0 - k * 0.85) + bead * 0.25 * (1.0 - k);
-  gl_FragColor = vec4(col, clamp(a, 0.0, 1.0));
+  // bioluminescent pulses running down the tentacles
+  float glow = pow(0.5 + 0.5 * sin(vDepth * 5.0 - uTime * 3.0), 6.0) * (1.0 - k);
+  col += glow * vec3(0.6, 0.9, 1.0) * 0.6;
+  float a = uAlpha * (0.4 + 0.6 * fr) * (1.0 - k * 0.85) + bead * 0.25 * (1.0 - k) + glow * 0.3;
+  gl_FragColor = vec4(col, clamp(a, 0.0, 1.0) * uFade);
+}`;
+
+const HALO_VERT = /* glsl */ `
+varying vec2 vUv;
+void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`;
+const HALO_FRAG = /* glsl */ `
+varying vec2 vUv;
+void main() {
+  float d = clamp(length(vUv - 0.5) * 2.0, 0.0, 1.0);
+  float a = pow(1.0 - d, 2.6) * 0.2;
+  gl_FragColor = vec4(0.35, 0.72, 1.0, a);
 }`;
 
 /* ------------------------------------------------------------------ */
@@ -213,7 +232,7 @@ type Shared = { uTime: { value: number }; uPulse: { value: number } };
 
 function strandMaterial(
   shared: Shared,
-  o: { color: string; color2: string; alpha: number; len: number; bead: number },
+  o: { color: string; color2: string; alpha: number; len: number; bead: number; fade?: number },
 ) {
   return new THREE.ShaderMaterial({
     vertexShader: STRAND_VERT,
@@ -228,6 +247,7 @@ function strandMaterial(
       uAlpha: { value: o.alpha },
       uLen: { value: o.len },
       uBead: { value: o.bead },
+      uFade: { value: o.fade ?? 1 },
     },
   });
 }
@@ -241,10 +261,13 @@ function swimPulse(time: number) {
     : (Math.exp(-(ph - 0.28) * 3.2) - rest) / (1 - rest);
 }
 
-function Jellyfish({ expanded, still }: { expanded: boolean; still: boolean }) {
+function Jellyfish({ expanded, still, burst }: { expanded: boolean; still: boolean; burst: number }) {
   const body = useRef<THREE.Group>(null);
   const tendrils = useRef<THREE.Group>(null);
   const oralArms = useRef<THREE.Group>(null);
+
+  const follow = useRef({ x: 0, y: 0, boost: 0 });
+  useEffect(() => { if (burst) follow.current.boost = 1; }, [burst]);
 
   const shared = useMemo<Shared>(() => ({ uTime: { value: 0 }, uPulse: { value: 0 } }), []);
 
@@ -258,11 +281,14 @@ function Jellyfish({ expanded, still }: { expanded: boolean; still: boolean }) {
       transparent: true,
       depthWrite: false,
       side: THREE.DoubleSide,
-      uniforms: { ...shared },
+      uniforms: { ...shared, uFade: { value: 1 } },
     });
     const tentacleMat = strandMaterial(shared, { color: "#C9F4FF", color2: "#E3B8FF", alpha: 0.8, len: 2.4, bead: 0.7 });
     const armMat = strandMaterial(shared, { color: "#E6D5FF", color2: "#9CC8FF", alpha: 0.6, len: 2.2, bead: 0 });
-    return { bell, tentacles, arms, bellMat, tentacleMat, armMat };
+    const haloMat = new THREE.ShaderMaterial({
+      vertexShader: HALO_VERT, fragmentShader: HALO_FRAG, transparent: true, depthWrite: false,
+    });
+    return { bell, tentacles, arms, bellMat, tentacleMat, armMat, haloMat };
   }, [shared]);
 
   useEffect(() => () => {
@@ -272,20 +298,33 @@ function Jellyfish({ expanded, still }: { expanded: boolean; still: boolean }) {
     });
   }, [assets]);
 
-  useFrame(({ clock }, rawDelta) => {
+  useFrame(({ clock, pointer, camera }, rawDelta) => {
     if (!body.current || !tendrils.current || !oralArms.current || still) return;
     const dt = Math.min(rawDelta, .05);
-    const t = clock.elapsedTime;
-    const pulse = swimPulse(t);
-    shared.uTime.value = t;
-    shared.uPulse.value = pulse;
+    const time = clock.elapsedTime;
+    const f = follow.current;
+    const k = 1 - Math.exp(-3 * dt);
+    f.x += (pointer.x - f.x) * k;
+    f.y += (pointer.y - f.y) * k;
+    f.boost = Math.max(0, f.boost - dt * .7);
+    const pulse = swimPulse(time);
+    shared.uTime.value = time;
+    shared.uPulse.value = pulse * (1 + f.boost * .8);
 
-    body.current.rotation.y += dt * .35;
-    body.current.rotation.z = Math.sin(t * .45) * .12;
-    body.current.position.y = .8 + Math.sin(t * 1.1) * .12 + pulse * .1;
-    oralArms.current.rotation.y = Math.sin(t * .7) * .18;
-    tendrils.current.rotation.y = Math.sin(t * .5) * .05;
+    // follows the cursor, tilts toward it, jets upward on click
+    body.current.rotation.y += dt * (.35 + f.boost * 1.6);
+    body.current.rotation.x = .13 - f.y * .15;
+    body.current.rotation.z = Math.sin(time * .45) * .12 - f.x * .18;
+    body.current.position.x = f.x * .6;
+    body.current.position.y = .8 + Math.sin(time * 1.1) * .12 + pulse * .1 + f.y * .35 + f.boost * .35;
+    oralArms.current.rotation.y = Math.sin(time * .7) * .18;
+    tendrils.current.rotation.y = Math.sin(time * .5) * .05;
     body.current.scale.setScalar(THREE.MathUtils.damp(body.current.scale.x, expanded ? 1.3 : 1, 5, dt));
+
+    // gentle camera parallax against the backdrop
+    camera.position.x += (f.x * .4 - camera.position.x) * (1 - Math.exp(-3 * dt));
+    camera.position.y += (f.y * .25 - camera.position.y) * (1 - Math.exp(-3 * dt));
+    camera.lookAt(0, .2, 0);
   });
 
   return (
@@ -303,11 +342,205 @@ function Jellyfish({ expanded, still }: { expanded: boolean; still: boolean }) {
   );
 }
 
+const P_VERT = /* glsl */ `uniform float uTime;uniform float uSpeed;uniform float uSize;uniform float uScale;attribute float aRand;varying float vA;
+void main(){vec3 p=position;
+p.y=mod(p.y+3.0+uTime*uSpeed*(0.5+aRand),6.0)-3.0;
+p.x+=sin(uTime*0.35+aRand*40.0)*0.15;
+vec4 mv=modelViewMatrix*vec4(p,1.0);
+gl_PointSize=max(uSize*(0.5+aRand)*uScale/-mv.z,1.0);
+vA=smoothstep(-3.0,-2.3,p.y)*(1.0-smoothstep(2.3,3.0,p.y))*(0.3+0.7*aRand);
+gl_Position=projectionMatrix*mv;}`;
+const P_FRAG = /* glsl */ `uniform float uDark;uniform float uRing;varying float vA;
+void main(){float d=length(gl_PointCoord-0.5)*2.0;if(d>1.0)discard;
+float soft=pow(1.0-d,1.5);
+float ring=smoothstep(0.55,0.9,d)*(1.0-smoothstep(0.9,1.0,d))*0.9+0.08;
+float a=mix(soft,ring,uRing);
+vec3 c=mix(vec3(0.29,0.56,0.78),vec3(0.74,0.92,1.0),uDark);
+gl_FragColor=vec4(c,a*vA*mix(0.8,0.7,uDark));}`;
+const R_VERT = /* glsl */ `varying vec2 vUv;varying float vPh;
+void main(){vUv=uv;vPh=modelMatrix[3].x;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`;
+const R_FRAG = /* glsl */ `uniform float uTime;uniform float uDark;varying vec2 vUv;varying float vPh;
+void main(){float a=smoothstep(0.0,0.5,vUv.x)*smoothstep(1.0,0.5,vUv.x);
+a*=pow(vUv.y,1.6);a*=0.6+0.4*sin(uTime*0.4+vPh*2.0);
+vec3 c=mix(vec3(0.55,0.78,0.95),vec3(0.35,0.75,1.0),uDark);
+gl_FragColor=vec4(c,a*mix(0.22,0.12,uDark));}`;
+
+type BgUniforms = { uTime: { value: number }; uDark: { value: number }; uScale: { value: number } };
+
+function makeParticles(u: BgUniforms, n: number, speed: number, size: number, ring: boolean) {
+  const pos = new Float32Array(n * 3), rnd = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    pos[i * 3] = (Math.random() - .5) * 9;
+    pos[i * 3 + 1] = (Math.random() - .5) * 6;
+    pos[i * 3 + 2] = -3 + Math.random() * 4;
+    rnd[i] = Math.random();
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  geometry.setAttribute("aRand", new THREE.BufferAttribute(rnd, 1));
+  const material = new THREE.ShaderMaterial({
+    vertexShader: P_VERT, fragmentShader: P_FRAG, transparent: true, depthWrite: false,
+    uniforms: { uTime: u.uTime, uDark: u.uDark, uScale: u.uScale, uSpeed: { value: speed }, uSize: { value: size }, uRing: { value: ring ? 1 : 0 } },
+  });
+  return { geometry, material };
+}
+
+/** Underwater backdrop: soft light rays, drifting marine snow and rising bubbles. */
+function Backdrop({ still }: { still: boolean }) {
+  const u = useMemo<BgUniforms>(() => ({ uTime: { value: 0 }, uDark: { value: 0 }, uScale: { value: 300 } }), []);
+  const bg = useMemo(() => {
+    const snow = makeParticles(u, 220, -.06, .03, false);
+    const bubbles = makeParticles(u, 18, .25, .09, true);
+    const rayGeos = [0, 1, 2, 3, 4].map((i) => new THREE.PlaneGeometry(1 + (i % 2) * .6, 9));
+    const rayMat = new THREE.ShaderMaterial({
+      vertexShader: R_VERT, fragmentShader: R_FRAG, transparent: true, depthWrite: false, side: THREE.DoubleSide,
+      uniforms: { uTime: u.uTime, uDark: u.uDark },
+    });
+    return { snow, bubbles, rayGeos, rayMat };
+  }, [u]);
+
+  useEffect(() => () => {
+    bg.snow.geometry.dispose(); bg.snow.material.dispose();
+    bg.bubbles.geometry.dispose(); bg.bubbles.material.dispose();
+    bg.rayGeos.forEach((g) => g.dispose()); bg.rayMat.dispose();
+  }, [bg]);
+
+  useFrame(({ clock, size, gl }, dt) => {
+    if (!still) u.uTime.value = clock.elapsedTime;
+    const dark = document.documentElement.classList.contains("dark") ? 1 : 0;
+    u.uDark.value += (dark - u.uDark.value) * Math.min(1, dt * 4);
+    u.uScale.value = size.height * gl.getPixelRatio() / (2 * Math.tan(THREE.MathUtils.degToRad(21)));
+  });
+
+  return (
+    <>
+      {bg.rayGeos.map((g, i) => (
+        <mesh key={i} geometry={g} material={bg.rayMat} position={[-3.5 + i * 1.75, .3, -2.5]} rotation={[0, 0, -.3 + (i % 3) * .06]} renderOrder={-1} />
+      ))}
+      <points geometry={bg.snow.geometry} material={bg.snow.material} renderOrder={-1} frustumCulled={false} />
+      <points geometry={bg.bubbles.geometry} material={bg.bubbles.material} renderOrder={-1} frustumCulled={false} />
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Distant swarm of small jellyfish                                    */
+/* ------------------------------------------------------------------ */
+
+const MINIS = [{ x: -3.0, y: -1.5, z: -3.2, s: 0.45, sp: 0.1, ph: 0.5 },{ x: -1.7, y: 1.9, z: -4.2, s: 0.35, sp: 0.16, ph: 2.1 },{ x: 2.9, y: -1.9, z: -3.6, s: 0.5, sp: 0.08, ph: 3.7 },{ x: 1.9, y: 1.5, z: -4.6, s: 0.4, sp: 0.14, ph: 5.2 },{ x: -3.4, y: 0.3, z: -5.0, s: 0.3, sp: 0.12, ph: 1.3 },{ x: 3.5, y: 0.4, z: -4.8, s: 0.32, sp: 0.18, ph: 4.4 }];
+
+function makeMiniTentacles() {
+  const tubes = Array.from({ length: 16 }, (_, i) => {
+    const a = (i / 16) * Math.PI * 2;
+    const L = 1 + ((i * 5) % 4) * .2;
+    const pts = Array.from({ length: 8 }, (_, j) => {
+      const t = j / 7, r = .83 - .15 * t;
+      return new THREE.Vector3(Math.cos(a) * r + Math.sin(t * 5 + i) * .05 * t, -.08 - L * t, Math.sin(a) * r + Math.cos(t * 4 + i) * .05 * t);
+    });
+    return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 20, .012, 4, false);
+  });
+  const merged = mergeGeometries(tubes, false);
+  tubes.forEach((g) => g.dispose());
+  if (!merged) throw new Error("Unable to build jellyfish tentacles");
+  return merged;
+}
+
+function Swarm({ still }: { still: boolean }) {
+  const groups = useRef<(THREE.Group | null)[]>([]);
+  const swarm = useMemo(() => {
+    const bellGeo = makeBell();
+    const tentGeo = makeMiniTentacles();
+    const items = MINIS.map(() => {
+      const u: Shared = { uTime: { value: 0 }, uPulse: { value: 0 } };
+      const bellMat = new THREE.ShaderMaterial({
+        vertexShader: BELL_VERT, fragmentShader: BELL_FRAG, transparent: true, depthWrite: false, side: THREE.DoubleSide,
+        uniforms: { ...u, uFade: { value: .4 } },
+      });
+      const tentMat = strandMaterial(u, { color: "#C9F4FF", color2: "#E3B8FF", alpha: .8, len: 1.6, bead: .5, fade: .4 });
+      return { u, bellMat, tentMat };
+    });
+    return { bellGeo, tentGeo, items };
+  }, []);
+
+  useEffect(() => () => {
+    swarm.bellGeo.dispose(); swarm.tentGeo.dispose();
+    swarm.items.forEach((m) => { m.bellMat.dispose(); m.tentMat.dispose(); });
+  }, [swarm]);
+
+  useFrame(({ clock }) => {
+    const T = still ? 0 : clock.elapsedTime;
+    MINIS.forEach((m, i) => {
+      const g = groups.current[i];
+      if (!g) return;
+      const it = swarm.items[i];
+      const p = swimPulse(T * (.75 + m.sp) + m.ph);
+      it.u.uTime.value = T;
+      it.u.uPulse.value = p;
+      const y = (((m.y + T * (.12 + m.sp * .1) + 3.4) % 6.8) + 6.8) % 6.8 - 3.4;
+      g.position.set(m.x + Math.sin(T * .3 + m.ph) * .25, y, m.z);
+      g.rotation.set(0, T * .3 + m.ph, Math.sin(T * .4 + m.ph) * .15);
+      const fade = .4 * THREE.MathUtils.smoothstep(y, -3.4, -2.6) * (1 - THREE.MathUtils.smoothstep(y, 2.6, 3.4));
+      it.bellMat.uniforms.uFade.value = fade;
+      it.tentMat.uniforms.uFade.value = fade;
+    });
+  });
+
+  return (
+    <>
+      {swarm.items.map((it, i) => (
+        <group key={i} ref={(g) => { groups.current[i] = g; }} scale={MINIS[i].s}>
+          <mesh geometry={swarm.bellGeo} material={it.bellMat} renderOrder={-1} />
+          <mesh geometry={swarm.tentGeo} material={it.tentMat} renderOrder={-1} />
+        </group>
+      ))}
+    </>
+  );
+}
+
 export function DriftingJellyfish() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const [away, setAway] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [still, setStill] = useState(false);
+  const [burst, setBurst] = useState(0);
+  const button = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const phone = window.matchMedia("(max-width: 600px)");
+    let frame = 0;
+    let previous = 0;
+    let current: { x: number; y: number; size: number } | undefined;
+    const tick = (time: number) => {
+      const element = button.current;
+      if (element && phone.matches) {
+        const slot = pathname === "/" ? document.querySelector(".jelly-hero-slot") : null;
+        const rect = slot?.getBoundingClientRect();
+        const inHero = Boolean(rect && rect.bottom > 100 && rect.top < window.innerHeight - 40);
+        const size = inHero ? 260 : 64;
+        const target = inHero && rect
+          ? { x: rect.left + (rect.width - size) / 2, y: rect.top + (rect.height - size) / 2, size }
+          : { x: window.innerWidth - size - 10, y: window.innerHeight - size - 12, size };
+        current ??= target;
+        const dt = Math.min((time - previous) / 1000 || .016, .05);
+        const k = still ? 1 : 1 - Math.exp(-12 * dt);
+        current.x += (target.x - current.x) * k;
+        current.y += (target.y - current.y) * k;
+        current.size += (target.size - current.size) * k;
+        element.style.left = `${current.x}px`;
+        element.style.top = `${current.y}px`;
+        element.style.width = `${current.size}px`;
+        element.style.height = `${current.size}px`;
+      } else if (element) {
+        element.style.removeProperty("left"); element.style.removeProperty("top");
+        element.style.removeProperty("width"); element.style.removeProperty("height");
+        current = undefined;
+      }
+      previous = time;
+      frame = window.requestAnimationFrame(tick);
+    };
+    frame = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname, still]);
 
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -324,8 +557,9 @@ export function DriftingJellyfish() {
     return () => { window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
   }, [pathname]);
 
-  return <Button type="button" variant="ghost" className={`jelly-float ${away ? "jelly-float-small" : ""}`} onClick={(event) => {
+  return <Button ref={button} type="button" variant="ghost" className={`jelly-float ${away ? "jelly-float-small" : ""}`} onClick={(event) => {
     setExpanded((value) => !value);
+    setBurst((value) => value + 1);
     setTheme(!document.documentElement.classList.contains("dark"), { x: event.clientX, y: event.clientY });
   }} aria-label="Toggle dark mode with jellyfish" title="Toggle dark mode with jellyfish">
     <Canvas
@@ -333,7 +567,9 @@ export function DriftingJellyfish() {
       camera={{ position: [0, 0, 6.2], fov: 42 }}
       gl={{ alpha: true, antialias: true, toneMapping: THREE.NoToneMapping }}
     >
-      <Jellyfish expanded={expanded} still={still} />
+      <Backdrop still={still} />
+      <Swarm still={still} />
+      <Jellyfish expanded={expanded} still={still} burst={burst} />
     </Canvas>
   </Button>;
 }
