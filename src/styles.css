@@ -762,7 +762,7 @@ body {
 .footer { color: var(--muted-foreground); }
 .footer a:hover { color: var(--foreground); }
 .coverflow-stage { margin-top: 60px; }
-.coverflow-card { box-shadow: 0 30px 60px color-mix(in srgb, var(--shadow-color) 55%, transparent); }
+.coverflow-card { height: auto; box-shadow: 0 30px 60px color-mix(in srgb, var(--shadow-color) 55%, transparent); }
 .coverflow-info > div { min-width: 0; max-width: 680px; }
 .coverflow-info h2 { overflow-wrap: anywhere; }
 .coverflow-info .interactive-project-button { margin-top: 18px; }
@@ -773,4 +773,5 @@ body {
 @media (max-width: 600px) {
   .coverflow .section-heading { font-size: 42px; line-height: .95; }
   .coverflow-info h2 { font-size: 26px; line-height: 1.05; }
+  .jelly-float:not(.jelly-float-small) { top: 510px; }
 }
