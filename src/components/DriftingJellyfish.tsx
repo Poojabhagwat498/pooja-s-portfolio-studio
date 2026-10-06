@@ -473,6 +473,7 @@ function Swarm({ still }: { still: boolean }) {
       const g = groups.current[i];
       if (!g) return;
       const it = swarm.items[i];
+      if (!it) return;
       const p = swimPulse(T * (.75 + m.sp) + m.ph);
       it.u.uTime.value = T;
       it.u.uPulse.value = p;
@@ -480,15 +481,17 @@ function Swarm({ still }: { still: boolean }) {
       g.position.set(m.x + Math.sin(T * .3 + m.ph) * .25, y, m.z);
       g.rotation.set(0, T * .3 + m.ph, Math.sin(T * .4 + m.ph) * .15);
       const fade = .4 * THREE.MathUtils.smoothstep(y, -3.4, -2.6) * (1 - THREE.MathUtils.smoothstep(y, 2.6, 3.4));
-      it.bellMat.uniforms.uFade.value = fade;
-      it.tentMat.uniforms.uFade.value = fade;
+      const bellFade = it.bellMat.uniforms['uFade'];
+      const tentacleFade = it.tentMat.uniforms['uFade'];
+      if (bellFade) bellFade.value = fade;
+      if (tentacleFade) tentacleFade.value = fade;
     });
   });
 
   return (
     <>
       {swarm.items.map((it, i) => (
-        <group key={i} ref={(g) => { groups.current[i] = g; }} scale={MINIS[i].s}>
+        <group key={i} ref={(g) => { groups.current[i] = g; }} scale={MINIS[i]?.s ?? .35}>
           <mesh geometry={swarm.bellGeo} material={it.bellMat} renderOrder={-1} />
           <mesh geometry={swarm.tentGeo} material={it.tentMat} renderOrder={-1} />
         </group>
