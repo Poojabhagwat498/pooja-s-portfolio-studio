@@ -775,3 +775,26 @@ body {
   .coverflow-info h2 { font-size: 26px; line-height: 1.05; }
   .jelly-float:not(.jelly-float-small) { top: 510px; }
 }
+
+/* Character flips keep complete word widths and a readable static fallback. */
+.hero-top > div:first-child { min-width: 0; }
+.hero-name { font-size: 100px; line-height: 1.04; }
+.hero-name .text-3d-flip { display: grid; gap: 0; color: inherit; }
+.text-flip-word { display: block; width: max-content; max-width: 100%; white-space: nowrap; perspective: 900px; }
+.text-flip-letter { display: inline-block; transform-origin: 50% 50%; backface-visibility: hidden; }
+.jelly-hero-slot { display: none; }
+@media (min-width: 1500px) { .hero-name { font-size: 140px; } }
+@media (max-width: 900px) { .hero-name { font-size: 72px; } }
+@media (max-width: 600px) {
+  .hero { min-height: auto; padding-bottom: 28px; }
+  .hero-top { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .hero-name { font-size: 40px; line-height: 1.12; max-width: 100%; }
+  .hero-middle { min-height: 0; margin-top: 16px; }
+  .jelly-hero-slot { display: block; height: 280px; width: 100%; }
+  .hero-statement { margin-top: 12px; }
+  .hero-statement h2 { font-size: 58px; }
+  .hero-bottom { margin-top: 28px; }
+  .jelly-float { transition: none; transform: none; }
+  .jelly-float-small:hover { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .text-flip-letter { transform: none !important; opacity: 1 !important; } }

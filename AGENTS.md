@@ -21,3 +21,4 @@
 - Use one shared case-study gallery on Home and Portfolio, because duplicate Work listings are no longer part of the requested presentation.
 - Initialize theme once in the root layout and expose control variants as data attributes, so theme persistence and section-specific button styles remain consistent across navigation.
 - Share theme state through a browser event and persistent storage, because the jellyfish and navigation switch must stay synchronized across pages.
+- Keep the name flip in a dedicated accessible text component and phone jellyfish positioning tied to its reserved hero slot, because motion must not clip words or block actions.
