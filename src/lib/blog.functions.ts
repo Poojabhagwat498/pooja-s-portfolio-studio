@@ -13,13 +13,17 @@ function publicClient() {
 }
 
 export const getPublishedPosts = createServerFn({ method: "GET" }).handler(async () => {
-  const { data, error } = await publicClient()
-    .from("blog_posts")
-    .select("id,title,slug,excerpt,body,project_name,published_at,created_at,updated_at,author_id,status")
-    .eq("status", "published")
-    .order("published_at", { ascending: false });
-  if (error) throw new Error("The blog could not be loaded.");
-  return data;
+  try {
+    const { data, error } = await publicClient()
+      .from("blog_posts")
+      .select("id,title,slug,excerpt,body,project_name,published_at,created_at,updated_at,author_id,status")
+      .eq("status", "published")
+      .order("published_at", { ascending: false });
+    if (error) return [];
+    return data ?? [];
+  } catch {
+    return [];
+  }
 });
 
 export const getMyPosts = createServerFn({ method: "GET" })
