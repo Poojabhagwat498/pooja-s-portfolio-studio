@@ -78,7 +78,7 @@ function Index() {
         </a>
         <ThemeToggle />
         <Button asChild className="nav-cta">
-          <Link to="/contact">Let's Connect</Link>
+          <Link to="/contact" data-jelly-cta>Let's Connect</Link>
         </Button>
       </nav>
       <div className="status-pill mono">
@@ -107,7 +107,7 @@ function Index() {
             </div>
             <div className="hero-actions">
               <Button asChild>
-                <a href="#projects">
+                <a href="#projects" data-jelly-cta>
                   View Projects <ArrowUpRight aria-hidden="true" />
                 </a>
               </Button>
@@ -312,7 +312,7 @@ function Index() {
             <p>Interested in working together or exploring one of my projects?</p>
             <div className="now-actions">
               <Button asChild>
-                <a href="#projects">View Projects</a>
+                <a href="#projects" data-jelly-cta>View Projects</a>
               </Button>
               <ResumeButton variant="secondary" />
               <Button asChild variant="secondary">
