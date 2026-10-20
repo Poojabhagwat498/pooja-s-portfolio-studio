@@ -509,7 +509,7 @@ export function DriftingJellyfish() {
   const [isDark, setIsDark] = useState(false);
   const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
 
-  const button = useRef<HTMLButtonElement>(null);
+  const button = useRef<HTMLDivElement>(null);
   const clickCount = useRef(0);
   const clickTimer = useRef<number | undefined>(undefined);
   const hasGreeted = useRef(false);
@@ -736,13 +736,9 @@ export function DriftingJellyfish() {
 
   return (
     <>
-      <button
+      <div
         ref={button}
-        type="button"
         className={`jelly-float ${away ? "jelly-float-small" : ""}`}
-        onClick={handleClick}
-        aria-label="Pet the jellyfish — click for a surprise"
-        title="Click me for a surprise"
       >
         <Canvas
           dpr={[1, 1.5]}
@@ -762,7 +758,14 @@ export function DriftingJellyfish() {
             cursor={cursor}
           />
         </Canvas>
-      </button>
+        <button
+          type="button"
+          className="jelly-pet"
+          onClick={handleClick}
+          aria-label="Pet the jellyfish — click for a surprise"
+          title="Click me for a surprise"
+        />
+      </div>
       {bubble && (
         <JellyBubble
           message={bubble.message}

@@ -795,14 +795,26 @@
   transition: top .9s ease, right .9s ease, left .25s ease, width .9s ease, height .9s ease, transform .9s ease, opacity .6s ease, filter .6s ease;
   touch-action: manipulation;
   will-change: transform, left, top, filter, opacity;
+  pointer-events: none;
 }
 .jelly-float.jelly-following { transition: width .9s ease, height .9s ease, opacity .6s ease, filter .6s ease; right: auto; }
 .jelly-float canvas { pointer-events: none; display: block; }
+.jelly-pet {
+  position: absolute; left: 50%; top: 38%;
+  width: 42%; height: 30%;
+  transform: translateX(-50%);
+  padding: 0; border: 0; border-radius: 50%;
+  background: transparent; cursor: pointer;
+  pointer-events: auto;
+  outline: none;
+}
+.jelly-pet:focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; }
 .jelly-float-small {
   top: auto; right: 16px; bottom: 20px; left: auto;
   width: 104px; height: 116px; transform: translate(0, 0);
   opacity: 0.92;
 }
+.jelly-float-small .jelly-pet { width: 56%; height: 44%; top: 30%; }
 .jelly-float-small:hover { transform: translateY(-6px); }
 
 /* Mascot speech bubble — glassmorphism */
