@@ -41,10 +41,14 @@ export function WorkSection() {
       if (raw) {
         const saved = JSON.parse(raw) as Project[];
         if (Array.isArray(saved) && saved.length) {
-          setItems(saved.map((project) => {
-            const current = baseProjects.find((base) => base.id === project.id);
-            return current?.image && !project.image ? { ...project, image: current.image } : project;
-          }));
+          setItems(
+            saved.map((project) => {
+              const current = baseProjects.find((base) => base.id === project.id);
+              return current?.image && !project.image
+                ? { ...project, image: current.image }
+                : project;
+            }),
+          );
         }
       }
     } catch {
@@ -70,7 +74,14 @@ export function WorkSection() {
       <p className="section-label">// FEATURED PROJECTS</p>
       <div className="work-intro">
         <h2 id="work-title" className="display section-heading">
-          THE WORK. <span className="work-count mono" aria-label={`${items.length} projects`} data-count={items.length}>{String(items.length).padStart(2, "0")}</span>
+          THE WORK.{" "}
+          <span
+            className="work-count mono"
+            aria-label={`${items.length} projects`}
+            data-count={items.length}
+          >
+            {String(items.length).padStart(2, "0")}
+          </span>
         </h2>
         <p>Full-stack projects built end to end. Open a project to read its case study.</p>
       </div>
@@ -80,7 +91,13 @@ export function WorkSection() {
           <article className="work-item" key={project.id}>
             {project.image ? (
               <div className="work-image">
-                <img src={project.image} alt={`${project.name} preview`} width={1200} height={848} loading="lazy" />
+                <img
+                  src={project.image}
+                  alt={`${project.name} preview`}
+                  width={1200}
+                  height={848}
+                  loading="lazy"
+                />
               </div>
             ) : (
               <div className="work-image work-image-empty">
@@ -107,7 +124,9 @@ export function WorkSection() {
               ))}
             </div>
             <div className="work-actions">
-              {baseProjects.some((base) => base.id === project.id) ? <InteractiveProjectButton id={project.id} /> : null}
+              {baseProjects.some((base) => base.id === project.id) ? (
+                <InteractiveProjectButton id={project.id} />
+              ) : null}
               <Button
                 variant="outline"
                 onClick={() => {
@@ -292,7 +311,12 @@ function CaseStudyEditor({
         <Area label="Outcomes (one per line)" value={outcomes} onChange={setOutcomes} />
         <Field label="Technology (comma separated)" value={stack} onChange={setStack} />
         <Field label="Live link" value={liveUrl} onChange={setLiveUrl} placeholder="https://" />
-        <Field label="Source code link" value={repoUrl} onChange={setRepoUrl} placeholder="https://" />
+        <Field
+          label="Source code link"
+          value={repoUrl}
+          onChange={setRepoUrl}
+          placeholder="https://"
+        />
       </div>
       <DialogFooter className="case-footer">
         <Button variant="ghost" className="case-delete" onClick={onDelete}>
@@ -384,7 +408,10 @@ function GeneratorDialog({ onCreate }: { onCreate: (project: Project) => void })
       index: "NEW",
       name: `${name.toUpperCase()}.`,
       kind: brief.technologies.trim() ? brief.technologies.trim().toUpperCase() : "CASE STUDY",
-      tagline: brief.problem.trim() || brief.notes.trim().slice(0, 160) || "Case study written from project notes.",
+      tagline:
+        brief.problem.trim() ||
+        brief.notes.trim().slice(0, 160) ||
+        "Case study written from project notes.",
       verified: false,
       caseStudy: {
         overview: draft,
@@ -422,15 +449,19 @@ function GeneratorDialog({ onCreate }: { onCreate: (project: Project) => void })
         <DialogHeader>
           <DialogTitle className="display case-title">WRITE A CASE STUDY</DialogTitle>
           <DialogDescription>
-            Add your notes and let the writing assistant shape them into a polished case study. It never invents
-            numbers — anything you leave blank is marked as not provided.
+            Add your notes and let the writing assistant shape them into a polished case study. It
+            never invents numbers — anything you leave blank is marked as not provided.
           </DialogDescription>
         </DialogHeader>
 
         <div className="case-body case-form">
           <Field label="Project name" value={brief.name} onChange={(v) => set("name", v)} />
           <Area label="Project notes" value={brief.notes} onChange={(v) => set("notes", v)} />
-          <Area label="Problem it solves" value={brief.problem} onChange={(v) => set("problem", v)} />
+          <Area
+            label="Problem it solves"
+            value={brief.problem}
+            onChange={(v) => set("problem", v)}
+          />
           <Area label="Goals" value={brief.goals} onChange={(v) => set("goals", v)} />
           <Area label="Key features" value={brief.features} onChange={(v) => set("features", v)} />
           <Field
@@ -438,10 +469,24 @@ function GeneratorDialog({ onCreate }: { onCreate: (project: Project) => void })
             value={brief.technologies}
             onChange={(v) => set("technologies", v)}
           />
-          <Area label="Challenges" value={brief.challenges} onChange={(v) => set("challenges", v)} />
+          <Area
+            label="Challenges"
+            value={brief.challenges}
+            onChange={(v) => set("challenges", v)}
+          />
           <Area label="Outcomes" value={brief.outcomes} onChange={(v) => set("outcomes", v)} />
-          <Field label="Live link" value={brief.liveUrl} onChange={(v) => set("liveUrl", v)} placeholder="https://" />
-          <Field label="Source code link" value={brief.repoUrl} onChange={(v) => set("repoUrl", v)} placeholder="https://" />
+          <Field
+            label="Live link"
+            value={brief.liveUrl}
+            onChange={(v) => set("liveUrl", v)}
+            placeholder="https://"
+          />
+          <Field
+            label="Source code link"
+            value={brief.repoUrl}
+            onChange={(v) => set("repoUrl", v)}
+            placeholder="https://"
+          />
 
           {error ? (
             <p className="case-error" role="alert">
@@ -503,7 +548,12 @@ function Field({
       <Label htmlFor={id} className="section-label">
         {label}
       </Label>
-      <Input id={id} value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} />
+      <Input
+        id={id}
+        value={value}
+        placeholder={placeholder}
+        onChange={(event) => onChange(event.target.value)}
+      />
     </div>
   );
 }

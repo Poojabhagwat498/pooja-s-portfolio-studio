@@ -45,9 +45,7 @@ function PortfolioPage() {
         </a>
         <ThemeToggle />
         <Button asChild className="nav-cta">
-          <Link to="/contact">
-            Let's Connect
-          </Link>
+          <Link to="/contact">Let's Connect</Link>
         </Button>
       </nav>
 
@@ -59,7 +57,8 @@ function PortfolioPage() {
           CASE BY CASE.
         </h1>
         <p className="portfolio-hero-copy">
-           Full-stack applications, thoughtful interfaces, and AI-powered experiences — from the first idea to the final build.
+          Full-stack applications, thoughtful interfaces, and AI-powered experiences — from the
+          first idea to the final build.
         </p>
         <div className="hero-actions">
           <Button asChild variant="outline">

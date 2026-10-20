@@ -8,13 +8,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { BookCallDialog } from "@/components/BookCallDialog";
 import { PortfolioMotion } from "@/components/PortfolioMotion";
 import Text3DFlip from "@/components/Text3DFlip";
-import {
-  RESUME_URL,
-  achievements,
-  contact,
-  education,
-  experience,
-} from "@/lib/portfolio-data";
+import { RESUME_URL, achievements, contact, education, experience } from "@/lib/portfolio-data";
 import portraitAsset from "@/assets/pooja-portrait.jpg.asset.json";
 
 const TITLE = "Pooja Bhagwat | Computer Science Engineer & MERN Stack Developer";
@@ -36,11 +30,27 @@ export const Route = createFileRoute("/")({
 });
 
 const principles = [
-  ["01", "START WITH WHY.", "The best work begins with a better question, not a bigger feature list."],
-  ["02", "MAKE IT MATTER.", "Every detail should have a purpose and make the experience feel effortless."],
+  [
+    "01",
+    "START WITH WHY.",
+    "The best work begins with a better question, not a bigger feature list.",
+  ],
+  [
+    "02",
+    "MAKE IT MATTER.",
+    "Every detail should have a purpose and make the experience feel effortless.",
+  ],
   ["03", "KEEP IT HUMAN.", "Good digital work is made for real people, not just perfect screens."],
-  ["04", "STAY CURIOUS.", "Explore widely, learn constantly, and never stop looking for a better way."],
-  ["05", "FINISH STRONG.", "Ideas only become meaningful when they are thoughtfully brought to life."],
+  [
+    "04",
+    "STAY CURIOUS.",
+    "Explore widely, learn constantly, and never stop looking for a better way.",
+  ],
+  [
+    "05",
+    "FINISH STRONG.",
+    "Ideas only become meaningful when they are thoughtfully brought to life.",
+  ],
 ];
 
 function ResumeButton({ variant = "outline" }: { variant?: "default" | "outline" | "secondary" }) {
@@ -78,7 +88,9 @@ function Index() {
         </a>
         <ThemeToggle />
         <Button asChild className="nav-cta">
-          <Link to="/contact" data-jelly-cta>Let's Connect</Link>
+          <Link to="/contact" data-jelly-cta>
+            Let's Connect
+          </Link>
         </Button>
       </nav>
       <div className="status-pill mono">
@@ -88,11 +100,16 @@ function Index() {
       <section className="hero page-gutter" aria-labelledby="hero-title">
         <div className="hero-grid" aria-hidden="true" />
         <div className="hero-side-rail mono" aria-hidden="true">
-          <span>01</span><span>FULL STACK</span><span>AI</span><span>WEB</span>
+          <span>01</span>
+          <span>FULL STACK</span>
+          <span>AI</span>
+          <span>WEB</span>
         </div>
         <div className="hero-top">
           <div>
-            <p className="hero-kicker mono"><span className="status-dot" /> PORTFOLIO · 2026</p>
+            <p className="hero-kicker mono">
+              <span className="status-dot" /> PORTFOLIO · 2026
+            </p>
             <h1 id="hero-title" className="display hero-name">
               <Text3DFlip>POOJA BHAGWAT</Text3DFlip>
             </h1>
@@ -116,15 +133,21 @@ function Index() {
             </div>
             <div className="hero-stats" aria-label="Portfolio highlights">
               <div>
-                <strong className="display" data-count="4">04</strong>
+                <strong className="display" data-count="4">
+                  04
+                </strong>
                 <span className="mono">SHIPPED PROJECTS</span>
               </div>
               <div>
-                <strong className="display" data-count="5">05</strong>
+                <strong className="display" data-count="5">
+                  05
+                </strong>
                 <span className="mono">SKILL GROUPS</span>
               </div>
               <div>
-                <strong className="display" data-count="1">01</strong>
+                <strong className="display" data-count="1">
+                  01
+                </strong>
                 <span className="mono">CURRENT INTERNSHIP</span>
               </div>
             </div>
@@ -140,7 +163,11 @@ function Index() {
         </div>
         <div className="hero-middle">
           <div className="jelly-hero-slot" aria-hidden="true" />
-          <div className="jelly-caption mono">A LITTLE CURIOSITY<br />GOES A LONG WAY. &nbsp; ↗</div>
+          <div className="jelly-caption mono">
+            A LITTLE CURIOSITY
+            <br />
+            GOES A LONG WAY. &nbsp; ↗
+          </div>
           <div className="hero-statement">
             <p>Full-stack development, AI-powered applications, and modern web technologies.</p>
             <h2 className="display">
@@ -193,14 +220,14 @@ function Index() {
           <div className="about-text">
             <p className="about-lead">Curiosity meets intention. Ideas meet working software.</p>
             <p className="about-copy">
-              I'm Pooja Bhagwat, a B.Tech Computer Science &amp; Engineering student at Sir Visvesvaraya Institute of
-              Technology, Nashik, carrying a CGPA of 8.76 out of 10 after completing my Diploma in Computer Engineering
-              with 84.29%.
+              I'm Pooja Bhagwat, a B.Tech Computer Science &amp; Engineering student at Sir
+              Visvesvaraya Institute of Technology, Nashik, carrying a CGPA of 8.76 out of 10 after
+              completing my Diploma in Computer Engineering with 84.29%.
             </p>
             <p className="about-copy">
-              I'm currently a MERN stack developer intern, building full-stack applications across MongoDB, Express.js,
-              React and Node.js — including AI-integrated products. I like learning new technologies and shaping
-              interfaces that stay clear and accessible.
+              I'm currently a MERN stack developer intern, building full-stack applications across
+              MongoDB, Express.js, React and Node.js — including AI-integrated products. I like
+              learning new technologies and shaping interfaces that stay clear and accessible.
             </p>
             <div className="about-actions">
               <ResumeButton />
@@ -223,7 +250,11 @@ function Index() {
         </div>
       </section>
 
-      <section id="experience" className="section page-gutter experience" aria-labelledby="experience-title">
+      <section
+        id="experience"
+        className="section page-gutter experience"
+        aria-labelledby="experience-title"
+      >
         <p className="section-label">// EXPERIENCE</p>
         <h2 id="experience-title" className="display section-heading">
           WHERE I'M
@@ -258,7 +289,9 @@ function Index() {
           <br />
           PRINCIPLES.
         </h2>
-        <p className="principles-intro">A few simple ideas guide the way I approach every new challenge.</p>
+        <p className="principles-intro">
+          A few simple ideas guide the way I approach every new challenge.
+        </p>
         <div className="principle-list">
           {principles.map(([number, title, text]) => (
             <div className="principle" key={number}>
@@ -282,7 +315,11 @@ function Index() {
         <SkillSymbols />
       </section>
 
-      <section id="achievements" className="section page-gutter principles" aria-labelledby="achievements-title">
+      <section
+        id="achievements"
+        className="section page-gutter principles"
+        aria-labelledby="achievements-title"
+      >
         <p className="section-label">// ACHIEVEMENTS</p>
         <h2 id="achievements-title" className="display section-heading">
           ALONG
@@ -312,7 +349,9 @@ function Index() {
             <p>Interested in working together or exploring one of my projects?</p>
             <div className="now-actions">
               <Button asChild>
-                <a href="#projects" data-jelly-cta>View Projects</a>
+                <a href="#projects" data-jelly-cta>
+                  View Projects
+                </a>
               </Button>
               <ResumeButton variant="secondary" />
               <Button asChild variant="secondary">
@@ -334,7 +373,11 @@ function Index() {
         <div className="contact-line">
           <p>Have a project in mind? Let's build something useful.</p>
           <div className="contact-details">
-            <Button asChild variant="outline" className="contact-book"><Link to="/contact"><Mail size={15} aria-hidden="true" /> Send a message</Link></Button>
+            <Button asChild variant="outline" className="contact-book">
+              <Link to="/contact">
+                <Mail size={15} aria-hidden="true" /> Send a message
+              </Link>
+            </Button>
             <BookCallDialog variant="outline" className="contact-book" />
             <a href={`mailto:${contact.email}`}>
               <Mail size={15} aria-hidden="true" /> {contact.email}

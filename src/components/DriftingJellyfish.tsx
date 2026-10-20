@@ -158,8 +158,18 @@ void main() {
 
 function makeBell() {
   const profile = [
-    [0, 1.06], [.18, 1.05], [.38, .99], [.61, .83], [.78, .58],
-    [.86, .29], [.88, .04], [.83, -.09], [.7, -.13], [.54, -.09], [.32, -.035], [0, -.01],
+    [0, 1.06],
+    [0.18, 1.05],
+    [0.38, 0.99],
+    [0.61, 0.83],
+    [0.78, 0.58],
+    [0.86, 0.29],
+    [0.88, 0.04],
+    [0.83, -0.09],
+    [0.7, -0.13],
+    [0.54, -0.09],
+    [0.32, -0.035],
+    [0, -0.01],
   ].map(([x, y]) => new THREE.Vector2(x, y));
   return new THREE.LatheGeometry(profile, 96);
 }
@@ -172,29 +182,29 @@ function makeTentacles() {
     const L = 1.3 + ((i * 7) % 5) * 0.16;
     const pts = Array.from({ length: 11 }, (_, j) => {
       const t = j / 10;
-      const r = .83 - .12 * t;
+      const r = 0.83 - 0.12 * t;
       return new THREE.Vector3(
-        Math.cos(a) * r + Math.sin(t * 6 + i * 1.7) * .05 * t,
-        -.08 - L * t,
-        Math.sin(a) * r + Math.cos(t * 5 + i * 1.3) * .05 * t,
+        Math.cos(a) * r + Math.sin(t * 6 + i * 1.7) * 0.05 * t,
+        -0.08 - L * t,
+        Math.sin(a) * r + Math.cos(t * 5 + i * 1.3) * 0.05 * t,
       );
     });
-    tubes.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 28, .008, 4, false));
+    tubes.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 28, 0.008, 4, false));
   }
   const trailing = 10;
   for (let i = 0; i < trailing; i++) {
-    const a = (i / trailing) * Math.PI * 2 + .2;
-    const L = 2.2 + (i % 3) * .2;
+    const a = (i / trailing) * Math.PI * 2 + 0.2;
+    const L = 2.2 + (i % 3) * 0.2;
     const pts = Array.from({ length: 12 }, (_, j) => {
       const t = j / 11;
-      const r = .62 - .3 * t;
+      const r = 0.62 - 0.3 * t;
       return new THREE.Vector3(
-        Math.cos(a) * r + Math.sin(t * 7 + i) * .09 * t,
-        -.1 - L * t,
-        Math.sin(a) * r + Math.cos(t * 6 + i) * .09 * t,
+        Math.cos(a) * r + Math.sin(t * 7 + i) * 0.09 * t,
+        -0.1 - L * t,
+        Math.sin(a) * r + Math.cos(t * 6 + i) * 0.09 * t,
       );
     });
-    tubes.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 36, .013, 4, false));
+    tubes.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 36, 0.013, 4, false));
   }
   const merged = mergeGeometries(tubes, false);
   tubes.forEach((t) => t.dispose());
@@ -203,28 +213,35 @@ function makeTentacles() {
 }
 
 function makeOralArm(i: number) {
-  const a = i * Math.PI / 2 + .4;
-  const segs = 70, across = 4;
-  const pos: number[] = [], uv: number[] = [], idx: number[] = [];
+  const a = (i * Math.PI) / 2 + 0.4;
+  const segs = 70,
+    across = 4;
+  const pos: number[] = [],
+    uv: number[] = [],
+    idx: number[] = [];
   for (let j = 0; j <= segs; j++) {
     const t = j / segs;
-    const r = .1 + .16 * t;
-    const cx = Math.cos(a) * r + Math.sin(t * 9 + i * 2) * .09 * t;
-    const cy = -.12 - 2.0 * t;
-    const cz = Math.sin(a) * r + Math.cos(t * 8 + i * 2) * .09 * t;
-    const w = .2 * (1 - t * .75) * (.7 + .3 * Math.sin(t * 14 + i));
+    const r = 0.1 + 0.16 * t;
+    const cx = Math.cos(a) * r + Math.sin(t * 9 + i * 2) * 0.09 * t;
+    const cy = -0.12 - 2.0 * t;
+    const cz = Math.sin(a) * r + Math.cos(t * 8 + i * 2) * 0.09 * t;
+    const w = 0.2 * (1 - t * 0.75) * (0.7 + 0.3 * Math.sin(t * 14 + i));
     const twist = a + t * 3 + i;
-    const px = -Math.sin(twist), pz = Math.cos(twist);
+    const px = -Math.sin(twist),
+      pz = Math.cos(twist);
     for (let k = 0; k <= across; k++) {
-      const s = k / across * 2 - 1;
-      const ruffle = Math.sin(t * 46 + i * 3 + s * 2) * .035 * Math.abs(s) * (.3 + t);
+      const s = (k / across) * 2 - 1;
+      const ruffle = Math.sin(t * 46 + i * 3 + s * 2) * 0.035 * Math.abs(s) * (0.3 + t);
       pos.push(cx + px * s * w + pz * ruffle, cy, cz + pz * s * w - px * ruffle);
       uv.push(k / across, t);
     }
   }
   for (let j = 0; j < segs; j++) {
     for (let k = 0; k < across; k++) {
-      const p0 = j * (across + 1) + k, p1 = p0 + 1, p2 = p0 + across + 1, p3 = p2 + 1;
+      const p0 = j * (across + 1) + k,
+        p1 = p0 + 1,
+        p2 = p0 + across + 1,
+        p3 = p2 + 1;
       idx.push(p0, p2, p1, p1, p2, p3);
     }
   }
@@ -301,7 +318,9 @@ function Jellyfish({
   const oralArms = useRef<THREE.Group>(null);
 
   const follow = useRef({ x: 0, y: 0, boost: 0 });
-  useEffect(() => { if (burst) follow.current.boost = 1; }, [burst]);
+  useEffect(() => {
+    if (burst) follow.current.boost = 1;
+  }, [burst]);
 
   const shared = useMemo<Shared>(() => ({ uTime: { value: 0 }, uPulse: { value: 0 } }), []);
 
@@ -315,26 +334,47 @@ function Jellyfish({
       transparent: true,
       depthWrite: false,
       side: THREE.DoubleSide,
-      uniforms: { ...shared, uFade: { value: 1 }, uGlow: { value: new THREE.Color("#2563EB") }, uBoost: { value: 0 }, uDark: { value: 0 } },
+      uniforms: {
+        ...shared,
+        uFade: { value: 1 },
+        uGlow: { value: new THREE.Color("#2563EB") },
+        uBoost: { value: 0 },
+        uDark: { value: 0 },
+      },
     });
-    const tentacleMat = strandMaterial(shared, { color: "#C9F4FF", color2: "#E3B8FF", alpha: 0.8, len: 2.4, bead: 0.7 });
-    const armMat = strandMaterial(shared, { color: "#E6D5FF", color2: "#9CC8FF", alpha: 0.6, len: 2.2, bead: 0 });
+    const tentacleMat = strandMaterial(shared, {
+      color: "#C9F4FF",
+      color2: "#E3B8FF",
+      alpha: 0.8,
+      len: 2.4,
+      bead: 0.7,
+    });
+    const armMat = strandMaterial(shared, {
+      color: "#E6D5FF",
+      color2: "#9CC8FF",
+      alpha: 0.6,
+      len: 2.2,
+      bead: 0,
+    });
     return { bell, tentacles, arms, bellMat, tentacleMat, armMat };
   }, [shared]);
 
-  useEffect(() => () => {
-    Object.values(assets).forEach((v) => {
-      if (Array.isArray(v)) v.forEach((g) => g.dispose());
-      else v.dispose();
-    });
-  }, [assets]);
+  useEffect(
+    () => () => {
+      Object.values(assets).forEach((v) => {
+        if (Array.isArray(v)) v.forEach((g) => g.dispose());
+        else v.dispose();
+      });
+    },
+    [assets],
+  );
 
   const dartRef = useRef(dart);
   dartRef.current = dart;
 
   useFrame(({ clock, pointer, camera }, rawDelta) => {
     if (!body.current || !tendrils.current || !oralArms.current) return;
-    const dt = Math.min(rawDelta, .05);
+    const dt = Math.min(rawDelta, 0.05);
     const time = clock.elapsedTime;
     const f = follow.current;
 
@@ -344,21 +384,61 @@ function Jellyfish({
     (assets.armMat.uniforms.uGlow.value as THREE.Color).copy(glow);
 
     // dark mode tint — richer glow on dark backgrounds
-    assets.bellMat.uniforms.uDark.value = THREE.MathUtils.damp(assets.bellMat.uniforms.uDark.value as number, dark, 4, dt);
-    assets.tentacleMat.uniforms.uDark.value = THREE.MathUtils.damp(assets.tentacleMat.uniforms.uDark.value as number, dark, 4, dt);
-    assets.armMat.uniforms.uDark.value = THREE.MathUtils.damp(assets.armMat.uniforms.uDark.value as number, dark, 4, dt);
+    assets.bellMat.uniforms.uDark.value = THREE.MathUtils.damp(
+      assets.bellMat.uniforms.uDark.value as number,
+      dark,
+      4,
+      dt,
+    );
+    assets.tentacleMat.uniforms.uDark.value = THREE.MathUtils.damp(
+      assets.tentacleMat.uniforms.uDark.value as number,
+      dark,
+      4,
+      dt,
+    );
+    assets.armMat.uniforms.uDark.value = THREE.MathUtils.damp(
+      assets.armMat.uniforms.uDark.value as number,
+      dark,
+      4,
+      dt,
+    );
 
     // boost from CTA hover flare
     const targetBoost = flare;
     const curBoost = assets.bellMat.uniforms.uBoost.value as number;
     assets.bellMat.uniforms.uBoost.value = THREE.MathUtils.damp(curBoost, targetBoost, 6, dt);
-    assets.tentacleMat.uniforms.uFlare.value = THREE.MathUtils.damp(assets.tentacleMat.uniforms.uFlare.value as number, flare, 6, dt);
-    assets.armMat.uniforms.uFlare.value = THREE.MathUtils.damp(assets.armMat.uniforms.uFlare.value as number, flare, 6, dt);
+    assets.tentacleMat.uniforms.uFlare.value = THREE.MathUtils.damp(
+      assets.tentacleMat.uniforms.uFlare.value as number,
+      flare,
+      6,
+      dt,
+    );
+    assets.armMat.uniforms.uFlare.value = THREE.MathUtils.damp(
+      assets.armMat.uniforms.uFlare.value as number,
+      flare,
+      6,
+      dt,
+    );
 
     // fade (depth effect)
-    assets.bellMat.uniforms.uFade.value = THREE.MathUtils.damp(assets.bellMat.uniforms.uFade.value as number, fade, 5, dt);
-    assets.tentacleMat.uniforms.uFade.value = THREE.MathUtils.damp(assets.tentacleMat.uniforms.uFade.value as number, fade, 5, dt);
-    assets.armMat.uniforms.uFade.value = THREE.MathUtils.damp(assets.armMat.uniforms.uFade.value as number, fade, 5, dt);
+    assets.bellMat.uniforms.uFade.value = THREE.MathUtils.damp(
+      assets.bellMat.uniforms.uFade.value as number,
+      fade,
+      5,
+      dt,
+    );
+    assets.tentacleMat.uniforms.uFade.value = THREE.MathUtils.damp(
+      assets.tentacleMat.uniforms.uFade.value as number,
+      fade,
+      5,
+      dt,
+    );
+    assets.armMat.uniforms.uFade.value = THREE.MathUtils.damp(
+      assets.armMat.uniforms.uFade.value as number,
+      fade,
+      5,
+      dt,
+    );
 
     if (still) {
       shared.uTime.value = time;
@@ -369,22 +449,27 @@ function Jellyfish({
 
     // lazy cursor-follow with gentle easing — follows the actual mouse across the whole page
     const k = 1 - Math.exp(-2.2 * dt);
-    let px = pointer.x, py = pointer.y;
-    if (cursor) { px = cursor.x; py = cursor.y; }
+    let px = pointer.x,
+      py = pointer.y;
+    if (cursor) {
+      px = cursor.x;
+      py = cursor.y;
+    }
     f.x += (px - f.x) * k;
     f.y += (py - f.y) * k;
-    f.boost = Math.max(0, f.boost - dt * .7);
+    f.boost = Math.max(0, f.boost - dt * 0.7);
 
     const pulse = swimPulse(time);
     shared.uTime.value = time;
-    shared.uPulse.value = pulse * (1 + f.boost * .8);
+    shared.uPulse.value = pulse * (1 + f.boost * 0.8);
 
     // idle float + sway so it feels alive even without cursor
     const idleX = Math.sin(time * 0.5) * 0.08;
     const idleY = Math.sin(time * 0.7) * 0.06;
 
     // dart offset (click reaction): dart away then drift back
-    let dartX = 0, dartY = 0;
+    let dartX = 0,
+      dartY = 0;
     const d = dartRef.current;
     if (d && d.t > 0) {
       const decay = Math.max(0, d.t);
@@ -392,27 +477,36 @@ function Jellyfish({
       dartY = d.y * decay;
     }
 
-    body.current.rotation.y += dt * (.3 + f.boost * 1.6);
-    body.current.rotation.x = .13 - f.y * .12;
-    body.current.rotation.z = Math.sin(time * .35) * .1 - f.x * .14;
-    body.current.position.x = f.x * .55 + idleX + dartX;
-    body.current.position.y = .6 + idleY + pulse * .1 + f.y * .3 + f.boost * .35 + dartY;
-    oralArms.current.rotation.y = Math.sin(time * .7) * .18;
-    tendrils.current.rotation.y = Math.sin(time * .5) * .05;
-    body.current.scale.setScalar(THREE.MathUtils.damp(body.current.scale.x, expanded ? 1.3 : 1, 5, dt));
+    body.current.rotation.y += dt * (0.3 + f.boost * 1.6);
+    body.current.rotation.x = 0.13 - f.y * 0.12;
+    body.current.rotation.z = Math.sin(time * 0.35) * 0.1 - f.x * 0.14;
+    body.current.position.x = f.x * 0.55 + idleX + dartX;
+    body.current.position.y = 0.6 + idleY + pulse * 0.1 + f.y * 0.3 + f.boost * 0.35 + dartY;
+    oralArms.current.rotation.y = Math.sin(time * 0.7) * 0.18;
+    tendrils.current.rotation.y = Math.sin(time * 0.5) * 0.05;
+    body.current.scale.setScalar(
+      THREE.MathUtils.damp(body.current.scale.x, expanded ? 1.3 : 1, 5, dt),
+    );
 
     // gentle camera parallax — wider framing so tentacles never clip at the edges
-    camera.position.x += (f.x * .25 - camera.position.x) * (1 - Math.exp(-2.5 * dt));
-    camera.position.y += (f.y * .15 - camera.position.y) * (1 - Math.exp(-2.5 * dt));
+    camera.position.x += (f.x * 0.25 - camera.position.x) * (1 - Math.exp(-2.5 * dt));
+    camera.position.y += (f.y * 0.15 - camera.position.y) * (1 - Math.exp(-2.5 * dt));
     camera.position.z = 7.4;
-    camera.lookAt(0, .1, 0);
+    camera.lookAt(0, 0.1, 0);
   });
 
   return (
     <>
-      <group ref={body} rotation={[.13, -.45, -.22]} position={[0, .6, 0]} scale={expanded && still ? 1.3 : 1}>
+      <group
+        ref={body}
+        rotation={[0.13, -0.45, -0.22]}
+        position={[0, 0.6, 0]}
+        scale={expanded && still ? 1.3 : 1}
+      >
         <group ref={oralArms}>
-          {assets.arms.map((g, i) => <mesh key={i} geometry={g} material={assets.armMat} />)}
+          {assets.arms.map((g, i) => (
+            <mesh key={i} geometry={g} material={assets.armMat} />
+          ))}
         </group>
         <group ref={tendrils}>
           <mesh geometry={assets.tentacles} material={assets.tentacleMat} />
@@ -436,7 +530,9 @@ function useActiveSection() {
     if (!sections.length) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
         if (visible[0]) setActiveId(visible[0].target.id);
       },
       { rootMargin: "-30% 0px -50% 0px", threshold: [0, 0.25, 0.5, 0.75] },
@@ -474,15 +570,29 @@ function JellyBubble({
       aria-label="Jellyfish message"
       style={{ left: position.left, top: position.top }}
     >
-      <button className="jelly-bubble-close" aria-label="Dismiss message" onClick={onDismiss}>×</button>
+      <button className="jelly-bubble-close" aria-label="Dismiss message" onClick={onDismiss}>
+        ×
+      </button>
       <p className="jelly-bubble-text">{message}</p>
       {actions && actions.length > 0 && (
         <div className="jelly-bubble-actions">
           {actions.map((a) =>
             a.href ? (
-              <a key={a.label} href={a.href} className="jelly-bubble-btn" onClick={onDismiss}>{a.label}</a>
+              <a key={a.label} href={a.href} className="jelly-bubble-btn" onClick={onDismiss}>
+                {a.label}
+              </a>
             ) : (
-              <button key={a.label} type="button" className="jelly-bubble-btn" onClick={() => { a.onClick?.(); onDismiss(); }}>{a.label}</button>
+              <button
+                key={a.label}
+                type="button"
+                className="jelly-bubble-btn"
+                onClick={() => {
+                  a.onClick?.();
+                  onDismiss();
+                }}
+              >
+                {a.label}
+              </button>
             ),
           )}
         </div>
@@ -503,7 +613,10 @@ export function DriftingJellyfish() {
   const [burst, setBurst] = useState(0);
   const [dart, setDart] = useState<{ x: number; y: number; t: number } | null>(null);
   const [flare, setFlare] = useState(0);
-  const [bubble, setBubble] = useState<{ message: string; actions?: { label: string; href?: string; onClick?: () => void }[] } | null>(null);
+  const [bubble, setBubble] = useState<{
+    message: string;
+    actions?: { label: string; href?: string; onClick?: () => void }[];
+  } | null>(null);
   const [bubblePos, setBubblePos] = useState({ left: 0, top: 0 });
   const [hidden, setHidden] = useState(false);
   const [isDark, setIsDark] = useState(false);
@@ -542,11 +655,16 @@ export function DriftingJellyfish() {
         const rect = slot?.getBoundingClientRect();
         const inHero = Boolean(rect && rect.top >= 80 && rect.top < window.innerHeight - 40);
         const size = inHero ? 260 : 72;
-        const target = inHero && rect
-          ? { x: rect.left + (rect.width - size) / 2, y: rect.top + (rect.height - size) / 2, size }
-          : { x: window.innerWidth - size - 12, y: window.innerHeight - size - 14, size };
+        const target =
+          inHero && rect
+            ? {
+                x: rect.left + (rect.width - size) / 2,
+                y: rect.top + (rect.height - size) / 2,
+                size,
+              }
+            : { x: window.innerWidth - size - 12, y: window.innerHeight - size - 14, size };
         current ??= target;
-        const dt = Math.min((time - previous) / 1000 || .016, .05);
+        const dt = Math.min((time - previous) / 1000 || 0.016, 0.05);
         const k = still ? 1 : 1 - Math.exp(-9 * dt);
         current.x += (target.x - current.x) * k;
         current.y += (target.y - current.y) * k;
@@ -583,12 +701,15 @@ export function DriftingJellyfish() {
     const update = () => {
       const sy = window.scrollY;
       const vh = window.innerHeight;
-      setAway(pathname !== "/" || sy > vh * .55);
+      setAway(pathname !== "/" || sy > vh * 0.55);
     };
     update();
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update);
-    return () => { window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
   }, [pathname]);
 
   /* Pause when tab hidden */
@@ -617,8 +738,15 @@ export function DriftingJellyfish() {
     const onMove = (e: MouseEvent) => {
       target.x = e.clientX;
       target.y = e.clientY;
-      if (!current.set) { current.x = e.clientX; current.y = e.clientY; current.set = true; }
-      setCursor({ x: (e.clientX / window.innerWidth) * 2 - 1, y: -((e.clientY / window.innerHeight) * 2 - 1) });
+      if (!current.set) {
+        current.x = e.clientX;
+        current.y = e.clientY;
+        current.set = true;
+      }
+      setCursor({
+        x: (e.clientX / window.innerWidth) * 2 - 1,
+        y: -((e.clientY / window.innerHeight) * 2 - 1),
+      });
     };
     const tick = () => {
       const el = button.current;
@@ -641,7 +769,10 @@ export function DriftingJellyfish() {
     };
     window.addEventListener("mousemove", onMove);
     frame = window.requestAnimationFrame(tick);
-    return () => { window.removeEventListener("mousemove", onMove); window.cancelAnimationFrame(frame); };
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.cancelAnimationFrame(frame);
+    };
   }, [still, away]);
 
   /* Dart decay — click reaction drifts back over ~1.2s */
@@ -651,7 +782,10 @@ export function DriftingJellyfish() {
     const start = performance.now();
     const decay = () => {
       const elapsed = (performance.now() - start) / 1200;
-      if (elapsed >= 1) { setDart((d) => (d ? { ...d, t: 0 } : null)); return; }
+      if (elapsed >= 1) {
+        setDart((d) => (d ? { ...d, t: 0 } : null));
+        return;
+      }
       setDart((d) => (d ? { ...d, t: Math.cos((elapsed * Math.PI) / 2) } : null));
       frame = window.requestAnimationFrame(decay);
     };
@@ -714,7 +848,9 @@ export function DriftingJellyfish() {
     // 3-click easter egg
     clickCount.current += 1;
     window.clearTimeout(clickTimer.current);
-    clickTimer.current = window.setTimeout(() => { clickCount.current = 0; }, 2500);
+    clickTimer.current = window.setTimeout(() => {
+      clickCount.current = 0;
+    }, 2500);
     if (clickCount.current >= 3) {
       clickCount.current = 0;
       const fact = FUN_FACTS[Math.floor(Math.random() * FUN_FACTS.length)];
@@ -723,10 +859,7 @@ export function DriftingJellyfish() {
       if (rect) setBubblePos({ left: rect.left - 230, top: rect.top + rect.height * 0.25 });
       setBubble({
         message: fact,
-        actions: [
-          { label: "View résumé", href: "/Pooja-Bhagwat-Resume.pdf" },
-          { label: "Close" },
-        ],
+        actions: [{ label: "View résumé", href: "/Pooja-Bhagwat-Resume.pdf" }, { label: "Close" }],
       });
     }
     event.stopPropagation();
@@ -736,10 +869,7 @@ export function DriftingJellyfish() {
 
   return (
     <>
-      <div
-        ref={button}
-        className={`jelly-float ${away ? "jelly-float-small" : ""}`}
-      >
+      <div ref={button} className={`jelly-float ${away ? "jelly-float-small" : ""}`}>
         <Canvas
           dpr={[1, 1.5]}
           camera={{ position: [0, 0, 7.4], fov: 38 }}

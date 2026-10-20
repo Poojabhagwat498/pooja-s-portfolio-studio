@@ -12,15 +12,26 @@ export function ProjectCoverflow() {
   if (!current) return null;
 
   return (
-    <section id="projects" className="section page-gutter coverflow" aria-labelledby="case-gallery-title">
+    <section
+      id="projects"
+      className="section page-gutter coverflow"
+      aria-labelledby="case-gallery-title"
+    >
       <p className="section-label">// CASE STUDIES</p>
-      <h2 id="case-gallery-title" className="display section-heading">EVERY PROJECT,<br />CASE BY CASE.</h2>
+      <h2 id="case-gallery-title" className="display section-heading">
+        EVERY PROJECT,
+        <br />
+        CASE BY CASE.
+      </h2>
       <div
         className="coverflow-stage"
         tabIndex={0}
         role="region"
         aria-label="Projects carousel, use arrow keys"
-        onKeyDown={(e) => { if (e.key === "ArrowRight") go(1); if (e.key === "ArrowLeft") go(-1); }}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowRight") go(1);
+          if (e.key === "ArrowLeft") go(-1);
+        }}
       >
         {projects.map((p, i) => {
           let off = i - active;
@@ -28,7 +39,8 @@ export function ProjectCoverflow() {
           if (off < -count / 2) off += count;
           const abs = Math.abs(off);
           return (
-            <Button variant="ghost"
+            <Button
+              variant="ghost"
               key={p.id}
               type="button"
               className="coverflow-card"
@@ -41,19 +53,29 @@ export function ProjectCoverflow() {
                 opacity: abs > 2 ? 0 : 1 - abs * 0.25,
               }}
             >
-              {p.image ? <img src={p.image} alt={p.name} loading="lazy" /> : <span className="display">{p.name}</span>}
+              {p.image ? (
+                <img src={p.image} alt={p.name} loading="lazy" />
+              ) : (
+                <span className="display">{p.name}</span>
+              )}
             </Button>
           );
         })}
       </div>
       <div className="coverflow-info">
-        <Button variant="outline" size="icon" onClick={() => go(-1)} aria-label="Previous project"><ArrowLeft /></Button>
+        <Button variant="outline" size="icon" onClick={() => go(-1)} aria-label="Previous project">
+          <ArrowLeft />
+        </Button>
         <div>
-          <p className="mono">{current.index} / {current.kind}</p>
+          <p className="mono">
+            {current.index} / {current.kind}
+          </p>
           <h2 className="display">{current.name}</h2>
           <InteractiveProjectButton id={current.id} label="View project" />
         </div>
-        <Button variant="outline" size="icon" onClick={() => go(1)} aria-label="Next project"><ArrowRight /></Button>
+        <Button variant="outline" size="icon" onClick={() => go(1)} aria-label="Next project">
+          <ArrowRight />
+        </Button>
       </div>
     </section>
   );

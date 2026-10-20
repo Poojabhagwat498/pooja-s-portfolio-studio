@@ -7,16 +7,22 @@ import type { Database, Tables } from "@/integrations/supabase/types";
 export type BlogPost = Tables<"blog_posts">;
 
 function publicClient() {
-  return createClient<Database>(process.env['SUPABASE_URL']!, process.env['SUPABASE_PUBLISHABLE_KEY']!, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
+  return createClient<Database>(
+    process.env["SUPABASE_URL"]!,
+    process.env["SUPABASE_PUBLISHABLE_KEY"]!,
+    {
+      auth: { persistSession: false, autoRefreshToken: false },
+    },
+  );
 }
 
 export const getPublishedPosts = createServerFn({ method: "GET" }).handler(async () => {
   try {
     const { data, error } = await publicClient()
       .from("blog_posts")
-      .select("id,title,slug,excerpt,body,project_name,published_at,created_at,updated_at,author_id,status")
+      .select(
+        "id,title,slug,excerpt,body,project_name,published_at,created_at,updated_at,author_id,status",
+      )
       .eq("status", "published")
       .order("published_at", { ascending: false });
     if (error) return [];
@@ -51,9 +57,14 @@ export const savePost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => postInput.parse(data))
   .handler(async ({ context, data }) => {
-    const email = String(context.claims['email'] ?? "").toLowerCase();
-    if (email !== "poojabhagwat2525@gmail.com") throw new Error("This writing area is for Pooja only.");
-    const slugBase = data.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "post";
+    const email = String(context.claims["email"] ?? "").toLowerCase();
+    if (email !== "poojabhagwat2525@gmail.com")
+      throw new Error("This writing area is for Pooja only.");
+    const slugBase =
+      data.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "") || "post";
     const now = new Date().toISOString();
     const values = {
       author_id: context.userId,
@@ -67,7 +78,11 @@ export const savePost = createServerFn({ method: "POST" })
       updated_at: now,
     };
     const query = data.id
-      ? context.supabase.from("blog_posts").update(values).eq("id", data.id).eq("author_id", context.userId)
+      ? context.supabase
+          .from("blog_posts")
+          .update(values)
+          .eq("id", data.id)
+          .eq("author_id", context.userId)
       : context.supabase.from("blog_posts").insert(values);
     const { error } = await query;
     if (error) throw new Error("The post could not be saved.");

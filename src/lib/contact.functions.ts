@@ -13,9 +13,13 @@ export const sendContactMessage = createServerFn({ method: "POST" })
   .inputValidator((data) => contactSchema.parse(data))
   .handler(async ({ data }) => {
     if (data.website) return { ok: true as const };
-    const gatewayKey = process.env['LOVABLE_API_KEY'];
-    const connectionKey = process.env['RESEND_API_KEY'];
-    if (!gatewayKey || !connectionKey) return { ok: false as const, error: "Email delivery is not available right now. Please use the email link instead." };
+    const gatewayKey = process.env["LOVABLE_API_KEY"];
+    const connectionKey = process.env["RESEND_API_KEY"];
+    if (!gatewayKey || !connectionKey)
+      return {
+        ok: false as const,
+        error: "Email delivery is not available right now. Please use the email link instead.",
+      };
 
     try {
       const response = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
@@ -36,11 +40,18 @@ export const sendContactMessage = createServerFn({ method: "POST" })
       if (!response.ok) {
         const details = await response.text();
         console.error(`Contact email failed [${response.status}]: ${details}`);
-        return { ok: false as const, error: "Your message could not be sent. Please email Pooja directly using the link below." };
+        return {
+          ok: false as const,
+          error:
+            "Your message could not be sent. Please email Pooja directly using the link below.",
+        };
       }
       return { ok: true as const };
     } catch (error) {
       console.error("Contact email unavailable", error);
-      return { ok: false as const, error: "Your message could not be sent. Please email Pooja directly using the link below." };
+      return {
+        ok: false as const,
+        error: "Your message could not be sent. Please email Pooja directly using the link below.",
+      };
     }
   });

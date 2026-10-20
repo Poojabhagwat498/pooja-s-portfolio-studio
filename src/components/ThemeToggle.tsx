@@ -20,7 +20,15 @@ export function ThemeToggle() {
   }
 
   return (
-    <Button type="button" variant="ghost" size="icon" className="theme-toggle text-foreground hover:bg-muted hover:text-foreground" onClick={toggle} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"} title={dark ? "Light mode" : "Dark mode"}>
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      className="theme-toggle text-foreground hover:bg-muted hover:text-foreground"
+      onClick={toggle}
+      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+      title={dark ? "Light mode" : "Dark mode"}
+    >
       {dark ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
     </Button>
   );

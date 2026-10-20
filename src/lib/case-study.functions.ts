@@ -66,7 +66,10 @@ export const generateCaseStudy = createServerFn({ method: "POST" })
         include: ["reasoning.encrypted_content"],
         input: [
           { role: "system", content: SYSTEM },
-          { role: "user", content: `Write the case study from these notes:\n\n${fieldBlock(data)}` },
+          {
+            role: "user",
+            content: `Write the case study from these notes:\n\n${fieldBlock(data)}`,
+          },
         ],
       }),
     });
@@ -115,7 +118,10 @@ export const generateCaseStudy = createServerFn({ method: "POST" })
     }
 
     if (!text.trim()) {
-      return { ok: false as const, error: "The writing assistant returned nothing. Please try again." };
+      return {
+        ok: false as const,
+        error: "The writing assistant returned nothing. Please try again.",
+      };
     }
 
     return { ok: true as const, caseStudy: text.trim() };

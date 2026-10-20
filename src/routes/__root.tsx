@@ -13,6 +13,8 @@ import { useEffect, useState, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { DriftingJellyfish } from "../components/DriftingJellyfish";
+import { ScrollProgressBar } from "../components/ScrollProgressBar";
+import { BackToTop } from "../components/BackToTop";
 import { setTheme, THEME_KEY } from "../lib/theme";
 
 function NotFoundComponent() {
@@ -41,7 +43,9 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error instanceof Error ? error : new Error(String(error)), { boundary: "tanstack_root_error_component" });
+    reportLovableError(error instanceof Error ? error : new Error(String(error)), {
+      boundary: "tanstack_root_error_component",
+    });
   }, [error]);
 
   return (
@@ -81,9 +85,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Pooja Bhagwat | Computer Science Engineer & MERN Stack Developer" },
-      { name: "description", content: "Portfolio of Pooja Bhagwat — MERN stack developer and Computer Science & Engineering student." },
-      { property: "og:title", content: "Pooja Bhagwat | Computer Science Engineer & MERN Stack Developer" },
-      { property: "og:description", content: "Full-stack and AI-powered web projects by Pooja Bhagwat." },
+      {
+        name: "description",
+        content:
+          "Portfolio of Pooja Bhagwat — MERN stack developer and Computer Science & Engineering student.",
+      },
+      {
+        property: "og:title",
+        content: "Pooja Bhagwat | Computer Science Engineer & MERN Stack Developer",
+      },
+      {
+        property: "og:description",
+        content: "Full-stack and AI-powered web projects by Pooja Bhagwat.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -95,7 +109,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -124,15 +141,21 @@ function RootComponent() {
   useEffect(() => {
     const preference = window.matchMedia("(prefers-color-scheme: dark)");
     let saved: string | null = null;
-    try { saved = window.localStorage.getItem(THEME_KEY); } catch { /* storage is optional */ }
+    try {
+      saved = window.localStorage.getItem(THEME_KEY);
+    } catch {
+      /* storage is optional */
+    }
     setTheme(saved === "dark" || (saved === null && preference.matches));
     setMounted(true);
   }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ScrollProgressBar />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <BackToTop />
       {mounted ? <DriftingJellyfish /> : null}
     </QueryClientProvider>
   );

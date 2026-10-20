@@ -119,7 +119,15 @@ export const projects: Project[] = [
         "Docker-based deployment",
         "AI-powered match recommendations",
       ],
-      stack: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "TanStack Query", "Socket.IO", "Docker"],
+      stack: [
+        "Next.js",
+        "TypeScript",
+        "Prisma",
+        "PostgreSQL",
+        "TanStack Query",
+        "Socket.IO",
+        "Docker",
+      ],
       outcomes: [
         "Built a scalable, secure platform architecture end to end",
         "Measured results not recorded yet",
@@ -177,14 +185,25 @@ export const experience = {
 };
 
 export const education = [
-  ["B.TECH, COMPUTER SCIENCE & ENGINEERING", "Sir Visvesvaraya Institute of Technology, Nashik · 2024–2027", "CGPA 8.76 / 10"],
-  ["DIPLOMA IN COMPUTER ENGINEERING", "Institute of Engineering and Technology, Kannad · 2021–2024", "84.29%"],
+  [
+    "B.TECH, COMPUTER SCIENCE & ENGINEERING",
+    "Sir Visvesvaraya Institute of Technology, Nashik · 2024–2027",
+    "CGPA 8.76 / 10",
+  ],
+  [
+    "DIPLOMA IN COMPUTER ENGINEERING",
+    "Institute of Engineering and Technology, Kannad · 2021–2024",
+    "84.29%",
+  ],
   ["SECONDARY SCHOOL CERTIFICATE (X)", "Sane Guruji Vidyalaya, Kannad · 2021", "83.20%"],
 ];
 
 export const skillGroups = [
   ["PROGRAMMING", ["Java", "Object-Oriented Programming", "JavaScript", "HTML", "CSS"]],
-  ["FRONTEND & BACKEND", ["React", "Next.js", "Node.js", "Express.js", "Spring Boot", "Bootstrap", "Tailwind CSS"]],
+  [
+    "FRONTEND & BACKEND",
+    ["React", "Next.js", "Node.js", "Express.js", "Spring Boot", "Bootstrap", "Tailwind CSS"],
+  ],
   ["DATABASES", ["MongoDB", "PostgreSQL (Prisma)", "MySQL"]],
   ["DEVOPS & CLOUD", ["Linux", "AWS", "Git", "GitHub"]],
   ["CORE CS", ["Data Structures & Algorithms", "Operating Systems", "Computer Networks", "DBMS"]],

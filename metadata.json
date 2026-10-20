@@ -1,0 +1,7 @@
+{
+  "name": "Pooja Bhagwat Portfolio",
+  "description": "Portfolio of Pooja Bhagwat — Computer Science & Engineering student and MERN stack developer featuring 3D drifting jellyfish, project showcases, case studies, blog, and contact.",
+  "version": "1.0.0",
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"],
+  "permissions": []
+}
