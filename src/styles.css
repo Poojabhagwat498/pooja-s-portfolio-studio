@@ -560,7 +560,8 @@
    ============================================================ */
 
 .portfolio-hero, .blog-hero {
-  min-height: 66svh; display: grid; align-content: center;
+  min-height: max(66svh, fit-content); display: grid; align-content: center;
+  padding-top: clamp(120px, 18vh, 180px); padding-bottom: clamp(70px, 12vh, 120px);
   border-radius: 0 0 42px 42px;
   background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 30%, var(--glass-tint-strong)), color-mix(in srgb, var(--secondary) 25%, var(--glass-tint-strong)));
   backdrop-filter: blur(var(--glass-blur-strong)) saturate(180%);
@@ -568,12 +569,19 @@
   border: 1px solid var(--glass-border);
   box-shadow: 0 12px 40px var(--glass-shadow);
   color: var(--foreground);
+  overflow: visible;
 }
 .portfolio-hero .section-label, .blog-hero .section-label, .portfolio-hero-copy, .blog-intro { color: var(--muted-foreground); }
 .portfolio-hero-copy { max-width: 560px; font-size: 16px; line-height: 1.6; color: var(--muted-foreground); margin: 18px 0 26px; }
 .portfolio-hero .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+/* Hero sections manage their own padding — override the default .section padding */
+.portfolio-hero.section, .blog-hero.section { padding-top: clamp(120px, 18vh, 180px); padding-bottom: clamp(70px, 12vh, 120px); }
+.portfolio-hero .section-heading, .blog-hero .section-heading { margin-top: 20px; }
+@media (max-width: 600px) {
+  .portfolio-hero.section, .blog-hero.section { padding-top: clamp(110px, 16vh, 150px); padding-bottom: clamp(60px, 10vh, 100px); min-height: auto; }
+}
 
-.blog-hero { padding-top: 145px; padding-bottom: 85px; }
+.blog-hero { padding-top: clamp(130px, 20vh, 200px); padding-bottom: clamp(80px, 14vh, 130px); }
 .blog-intro { max-width: 570px; margin-top: 30px; color: var(--muted-foreground); font-size: 18px; line-height: 1.65; }
 
 /* Blog feed */
