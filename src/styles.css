@@ -787,20 +787,20 @@
    ============================================================ */
 
 .jelly-float {
-  position: fixed; z-index: 20; top: 22%; right: clamp(28px, 6vw, 96px); left: auto;
-  width: clamp(300px, 40vw, 560px); height: clamp(310px, 41vw, 540px);
+  position: fixed; z-index: 20; top: 18%; right: clamp(28px, 6vw, 96px); left: auto;
+  width: clamp(300px, 40vw, 560px); height: clamp(340px, 45vw, 600px);
   padding: 0; border: 0; border-radius: 50%; background: transparent;
   cursor: pointer; overflow: visible;
   transform: translate(0, -4%);
-  transition: top .9s ease, right .9s ease, left .9s ease, width .9s ease, height .9s ease, transform .9s ease, opacity .6s ease, filter .6s ease;
+  transition: top .9s ease, right .9s ease, left .25s ease, width .9s ease, height .9s ease, transform .9s ease, opacity .6s ease, filter .6s ease;
   touch-action: manipulation;
-  will-change: transform, filter, opacity;
+  will-change: transform, left, top, filter, opacity;
 }
-.jelly-float:hover, .jelly-float:focus-visible { background: transparent; }
-.jelly-float canvas { pointer-events: none; }
+.jelly-float.jelly-following { transition: width .9s ease, height .9s ease, opacity .6s ease, filter .6s ease; right: auto; }
+.jelly-float canvas { pointer-events: none; display: block; }
 .jelly-float-small {
   top: auto; right: 16px; bottom: 20px; left: auto;
-  width: 104px; height: 104px; transform: translate(0, 0);
+  width: 104px; height: 116px; transform: translate(0, 0);
   opacity: 0.92;
 }
 .jelly-float-small:hover { transform: translateY(-6px); }

@@ -5,6 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useRouterState } from "@tanstack/react-router";
 import * as THREE from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import { THEME_EVENT } from "@/lib/theme";
 
 /* ------------------------------------------------------------------ */
 /* Section accent colors — the jellyfish shifts glow to match          */
@@ -61,6 +62,7 @@ uniform float uTime;
 uniform float uFade;
 uniform vec3 uGlow;
 uniform float uBoost;
+uniform float uDark;
 float hash(vec3 p) {
   p = fract(p * 0.3183099 + 0.1);
   p *= 17.0;
@@ -75,12 +77,13 @@ void main() {
   float h = clamp((vP.y + 0.1) / 1.16, 0.0, 1.0);
   float ang = atan(vP.z, vP.x);
 
-  // tint the base toward the section glow color
-  vec3 top = mix(vec3(0.50, 0.58, 1.00), uGlow, 0.35);
-  vec3 mid = mix(vec3(0.50, 0.84, 1.00), uGlow, 0.28);
-  vec3 rim = vec3(0.88, 0.98, 1.00);
+  // tint the base toward the section glow color; deeper, richer hues in dark mode
+  vec3 top = mix(vec3(0.50, 0.58, 1.00), uGlow, 0.35 + uDark * 0.25);
+  vec3 mid = mix(vec3(0.50, 0.84, 1.00), uGlow, 0.28 + uDark * 0.25);
+  vec3 rim = mix(vec3(0.88, 0.98, 1.00), uGlow, uDark * 0.35);
   vec3 col = mix(mid, top, h * h);
   col = mix(col, rim, fr);
+  col += uDark * uGlow * 0.15;
 
   float canal = pow(abs(cos(ang * 8.0)), 60.0) * smoothstep(0.02, 0.15, h) * (1.0 - smoothstep(0.9, 1.0, h));
   float stria = (0.5 + 0.5 * sin(vP.y * 70.0)) * (1.0 - smoothstep(0.0, 0.45, h)) * 0.08;
@@ -94,8 +97,8 @@ void main() {
   col += stria;
   col += uBoost * uGlow * 0.25;
 
-  float alpha = 0.2 + fr * 0.6 + canal * 0.3 + spots * 0.5 + band * 0.45 + uBoost * 0.1;
-  gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.95) * uFade);
+  float alpha = 0.2 + fr * 0.6 + canal * 0.3 + spots * 0.5 + band * 0.45 + uBoost * 0.1 + uDark * 0.12;
+  gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.96) * uFade);
 }`;
 
 const STRAND_VERT = /* glsl */ `
@@ -129,6 +132,7 @@ uniform float uBead;
 uniform float uTime;
 uniform float uFade;
 uniform float uFlare;
+uniform float uDark;
 varying float vDepth;
 varying vec3 vN;
 varying vec3 vV;
@@ -138,12 +142,13 @@ void main() {
   float fr = pow(1.0 - clamp(abs(dot(N, normalize(vV))), 0.0, 1.0), 1.5);
   float k = smoothstep(0.0, uLen, vDepth);
   vec3 col = mix(uColor, uColor2, k);
-  col = mix(col, uGlow, uFlare * 0.4 * (1.0 - k));
+  col = mix(col, uGlow, (uFlare * 0.4 + uDark * 0.35) * (1.0 - k));
   float bead = pow(0.5 + 0.5 * sin(vDepth * 42.0), 8.0) * uBead;
   col += bead * 0.5;
   float glow = pow(0.5 + 0.5 * sin(vDepth * 5.0 - uTime * 3.0), 6.0) * (1.0 - k);
-  col += glow * mix(vec3(0.6, 0.9, 1.0), uGlow, 0.4) * (0.6 + uFlare * 0.5);
-  float a = uAlpha * (0.4 + 0.6 * fr) * (1.0 - k * 0.85) + bead * 0.25 * (1.0 - k) + glow * 0.3 + uFlare * 0.15;
+  col += glow * mix(vec3(0.6, 0.9, 1.0), uGlow, 0.4 + uDark * 0.3) * (0.6 + uFlare * 0.5);
+  col += uDark * uGlow * 0.18 * (1.0 - k);
+  float a = uAlpha * (0.4 + 0.6 * fr) * (1.0 - k * 0.85) + bead * 0.25 * (1.0 - k) + glow * 0.3 + uFlare * 0.15 + uDark * 0.1 * (1.0 - k);
   gl_FragColor = vec4(col, clamp(a, 0.0, 1.0) * uFade);
 }`;
 
@@ -257,6 +262,7 @@ function strandMaterial(
       uBead: { value: o.bead },
       uFlare: { value: 0 },
       uFade: { value: o.fade ?? 1 },
+      uDark: { value: 0 },
     },
   });
 }
@@ -277,6 +283,8 @@ function Jellyfish({
   flare,
   glow,
   fade,
+  dark,
+  cursor,
 }: {
   expanded: boolean;
   still: boolean;
@@ -285,6 +293,8 @@ function Jellyfish({
   flare: number;
   glow: THREE.Color;
   fade: number;
+  dark: number;
+  cursor: { x: number; y: number } | null;
 }) {
   const body = useRef<THREE.Group>(null);
   const tendrils = useRef<THREE.Group>(null);
@@ -305,7 +315,7 @@ function Jellyfish({
       transparent: true,
       depthWrite: false,
       side: THREE.DoubleSide,
-      uniforms: { ...shared, uFade: { value: 1 }, uGlow: { value: new THREE.Color("#2563EB") }, uBoost: { value: 0 } },
+      uniforms: { ...shared, uFade: { value: 1 }, uGlow: { value: new THREE.Color("#2563EB") }, uBoost: { value: 0 }, uDark: { value: 0 } },
     });
     const tentacleMat = strandMaterial(shared, { color: "#C9F4FF", color2: "#E3B8FF", alpha: 0.8, len: 2.4, bead: 0.7 });
     const armMat = strandMaterial(shared, { color: "#E6D5FF", color2: "#9CC8FF", alpha: 0.6, len: 2.2, bead: 0 });
@@ -333,6 +343,11 @@ function Jellyfish({
     (assets.tentacleMat.uniforms.uGlow.value as THREE.Color).copy(glow);
     (assets.armMat.uniforms.uGlow.value as THREE.Color).copy(glow);
 
+    // dark mode tint — richer glow on dark backgrounds
+    assets.bellMat.uniforms.uDark.value = THREE.MathUtils.damp(assets.bellMat.uniforms.uDark.value as number, dark, 4, dt);
+    assets.tentacleMat.uniforms.uDark.value = THREE.MathUtils.damp(assets.tentacleMat.uniforms.uDark.value as number, dark, 4, dt);
+    assets.armMat.uniforms.uDark.value = THREE.MathUtils.damp(assets.armMat.uniforms.uDark.value as number, dark, 4, dt);
+
     // boost from CTA hover flare
     const targetBoost = flare;
     const curBoost = assets.bellMat.uniforms.uBoost.value as number;
@@ -352,10 +367,12 @@ function Jellyfish({
       return;
     }
 
-    // lazy cursor-follow with gentle easing
+    // lazy cursor-follow with gentle easing — follows the actual mouse across the whole page
     const k = 1 - Math.exp(-2.2 * dt);
-    f.x += (pointer.x - f.x) * k;
-    f.y += (pointer.y - f.y) * k;
+    let px = pointer.x, py = pointer.y;
+    if (cursor) { px = cursor.x; py = cursor.y; }
+    f.x += (px - f.x) * k;
+    f.y += (py - f.y) * k;
     f.boost = Math.max(0, f.boost - dt * .7);
 
     const pulse = swimPulse(time);
@@ -379,20 +396,21 @@ function Jellyfish({
     body.current.rotation.x = .13 - f.y * .12;
     body.current.rotation.z = Math.sin(time * .35) * .1 - f.x * .14;
     body.current.position.x = f.x * .55 + idleX + dartX;
-    body.current.position.y = .8 + idleY + pulse * .1 + f.y * .3 + f.boost * .35 + dartY;
+    body.current.position.y = .6 + idleY + pulse * .1 + f.y * .3 + f.boost * .35 + dartY;
     oralArms.current.rotation.y = Math.sin(time * .7) * .18;
     tendrils.current.rotation.y = Math.sin(time * .5) * .05;
     body.current.scale.setScalar(THREE.MathUtils.damp(body.current.scale.x, expanded ? 1.3 : 1, 5, dt));
 
-    // gentle camera parallax
-    camera.position.x += (f.x * .3 - camera.position.x) * (1 - Math.exp(-2.5 * dt));
-    camera.position.y += (f.y * .18 - camera.position.y) * (1 - Math.exp(-2.5 * dt));
-    camera.lookAt(0, .2, 0);
+    // gentle camera parallax — wider framing so tentacles never clip at the edges
+    camera.position.x += (f.x * .25 - camera.position.x) * (1 - Math.exp(-2.5 * dt));
+    camera.position.y += (f.y * .15 - camera.position.y) * (1 - Math.exp(-2.5 * dt));
+    camera.position.z = 7.4;
+    camera.lookAt(0, .1, 0);
   });
 
   return (
     <>
-      <group ref={body} rotation={[.13, -.45, -.22]} position={[0, .8, 0]} scale={expanded && still ? 1.3 : 1}>
+      <group ref={body} rotation={[.13, -.45, -.22]} position={[0, .6, 0]} scale={expanded && still ? 1.3 : 1}>
         <group ref={oralArms}>
           {assets.arms.map((g, i) => <mesh key={i} geometry={g} material={assets.armMat} />)}
         </group>
@@ -488,6 +506,8 @@ export function DriftingJellyfish() {
   const [bubble, setBubble] = useState<{ message: string; actions?: { label: string; href?: string; onClick?: () => void }[] } | null>(null);
   const [bubblePos, setBubblePos] = useState({ left: 0, top: 0 });
   const [hidden, setHidden] = useState(false);
+  const [isDark, setIsDark] = useState(false);
+  const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
 
   const button = useRef<HTMLButtonElement>(null);
   const clickCount = useRef(0);
@@ -577,6 +597,52 @@ export function DriftingJellyfish() {
     document.addEventListener("visibilitychange", onVisibility);
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
+
+  /* Track dark mode so the jellyfish recolors its glow */
+  useEffect(() => {
+    const update = () => setIsDark(document.documentElement.classList.contains("dark"));
+    update();
+    window.addEventListener(THEME_EVENT, update);
+    return () => window.removeEventListener(THEME_EVENT, update);
+  }, []);
+
+  /* Whole-page cursor following — the jellyfish button eases toward the mouse */
+  useEffect(() => {
+    if (still) return;
+    const phone = window.matchMedia("(max-width: 600px)");
+    if (phone.matches) return;
+    let frame = 0;
+    const target = { x: 0, y: 0 };
+    const current = { x: 0, y: 0, set: false };
+    const onMove = (e: MouseEvent) => {
+      target.x = e.clientX;
+      target.y = e.clientY;
+      if (!current.set) { current.x = e.clientX; current.y = e.clientY; current.set = true; }
+      setCursor({ x: (e.clientX / window.innerWidth) * 2 - 1, y: -((e.clientY / window.innerHeight) * 2 - 1) });
+    };
+    const tick = () => {
+      const el = button.current;
+      if (el && current.set && !away) {
+        el.classList.add("jelly-following");
+        const k = 0.045;
+        current.x += (target.x - current.x) * k;
+        current.y += (target.y - current.y) * k;
+        // offset so the jellyfish sits near the cursor but not on top of it
+        const size = el.offsetWidth || 400;
+        el.style.left = `${current.x - size * 0.5}px`;
+        el.style.top = `${current.y - size * 0.45}px`;
+        el.style.right = "auto";
+      } else if (el) {
+        el.classList.remove("jelly-following");
+        el.style.left = "";
+        el.style.top = "";
+      }
+      frame = window.requestAnimationFrame(tick);
+    };
+    window.addEventListener("mousemove", onMove);
+    frame = window.requestAnimationFrame(tick);
+    return () => { window.removeEventListener("mousemove", onMove); window.cancelAnimationFrame(frame); };
+  }, [still, away]);
 
   /* Dart decay — click reaction drifts back over ~1.2s */
   useEffect(() => {
@@ -680,7 +746,7 @@ export function DriftingJellyfish() {
       >
         <Canvas
           dpr={[1, 1.5]}
-          camera={{ position: [0, 0, 6.2], fov: 42 }}
+          camera={{ position: [0, 0, 7.4], fov: 38 }}
           gl={{ alpha: true, antialias: !away, toneMapping: THREE.NoToneMapping }}
           frameloop={effectiveStill ? "demand" : "always"}
         >
@@ -692,6 +758,8 @@ export function DriftingJellyfish() {
             flare={flare}
             glow={glow}
             fade={fade}
+            dark={isDark ? 1 : 0}
+            cursor={cursor}
           />
         </Canvas>
       </button>
