@@ -1,6 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { BadgeCheck, Loader2, Pencil, Sparkle } from "lucide-react";
+import {
+  BadgeCheck,
+  Calendar,
+  Code2,
+  Loader2,
+  Pencil,
+  RotateCcw,
+  Sparkle,
+  Users,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,6 +27,13 @@ import { toast } from "sonner";
 import { projects as baseProjects, type Project } from "@/lib/portfolio-data";
 import { generateCaseStudy, type CaseStudyBrief } from "@/lib/case-study.functions";
 import { InteractiveProjectButton } from "@/components/InteractiveProjectButton";
+import { ProjectFilter } from "@/components/ProjectFilter";
+import {
+  type FilterMode,
+  STACK_FILTERS,
+  TYPE_FILTERS,
+  matchesSearchQuery,
+} from "@/lib/project-filter";
 
 const STORE_KEY = "pb-portfolio-projects-v1";
 
@@ -33,6 +49,9 @@ export function WorkSection() {
   const [hydrated, setHydrated] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
+  const [mode, setMode] = useState<FilterMode>("stack");
+  const [selectedFilter, setSelectedFilter] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     setHydrated(true);
@@ -67,7 +86,23 @@ export function WorkSection() {
     }
   }
 
+  const filteredItems = useMemo(() => {
+    const options = mode === "stack" ? STACK_FILTERS : TYPE_FILTERS;
+    const activeOption = options.find((o) => o.id === selectedFilter) ?? options[0];
+
+    return items.filter((p) => {
+      const matchesCategory = activeOption ? activeOption.matches(p) : true;
+      const matchesSearch = matchesSearchQuery(p, searchQuery);
+      return matchesCategory && matchesSearch;
+    });
+  }, [items, mode, selectedFilter, searchQuery]);
+
   const active = items.find((item) => item.id === openId) ?? null;
+
+  const handleReset = () => {
+    setSelectedFilter("all");
+    setSearchQuery("");
+  };
 
   return (
     <section id="work" className="section page-gutter" aria-labelledby="work-title">
@@ -77,83 +112,144 @@ export function WorkSection() {
           THE WORK.{" "}
           <span
             className="work-count mono"
-            aria-label={`${items.length} projects`}
-            data-count={items.length}
+            aria-label={`${filteredItems.length} projects`}
+            data-count={filteredItems.length}
           >
-            {String(items.length).padStart(2, "0")}
+            {String(filteredItems.length).padStart(2, "0")}
           </span>
         </h2>
-        <p>Full-stack projects built end to end. Open a project to read its case study.</p>
+        <p>
+          Full-stack projects built end to end. Filter or search to explore specific stacks and
+          systems.
+        </p>
       </div>
 
-      <div className="work-grid">
-        {items.map((project) => (
-          <article className="work-item" key={project.id}>
-            {project.image ? (
-              <div className="work-image">
-                <img
-                  src={project.image}
-                  alt={`${project.name} preview`}
-                  width={1200}
-                  height={848}
-                  loading="lazy"
-                />
+      <ProjectFilter
+        mode={mode}
+        onModeChange={setMode}
+        selectedFilter={selectedFilter}
+        onSelectFilter={setSelectedFilter}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        allProjects={items}
+        filteredCount={filteredItems.length}
+        onReset={handleReset}
+      />
+
+      {filteredItems.length === 0 ? (
+        <div
+          key={`empty-${mode}-${selectedFilter}-${searchQuery}`}
+          className="coverflow-empty project-fade-in"
+          role="status"
+        >
+          <p className="section-label">// NO MATCHES FOUND</p>
+          <h3 className="display">NO PROJECTS FOUND.</h3>
+          <p>
+            No projects match &ldquo;{searchQuery}&rdquo; under the selected filter. Try adjusting
+            your search term or resetting the filter.
+          </p>
+          <Button variant="outline" onClick={handleReset} className="mt-4">
+            <RotateCcw size={14} className="mr-2" />
+            Reset search and filters
+          </Button>
+        </div>
+      ) : (
+        <div
+          key={`work-grid-${mode}-${selectedFilter}-${searchQuery}`}
+          className="work-grid project-fade-in"
+        >
+          {filteredItems.map((project) => (
+            <article className="work-item" key={project.id}>
+              {project.image ? (
+                <div className="work-image">
+                  <img
+                    src={project.image}
+                    alt={`${project.name} preview`}
+                    width={1600}
+                    height={900}
+                    loading="lazy"
+                  />
+                </div>
+              ) : (
+                <div className="work-image work-image-empty">
+                  <span className="mono">CASE STUDY</span>
+                </div>
+              )}
+              <div className="work-head">
+                <p className="section-label">
+                  {project.index} / {project.kind}
+                </p>
+                {project.verified ? (
+                  <span className="verified-badge">
+                    <BadgeCheck size={13} aria-hidden="true" /> VERIFIED PROJECT
+                  </span>
+                ) : null}
               </div>
-            ) : (
-              <div className="work-image work-image-empty">
-                <span className="mono">CASE STUDY</span>
+              <h3 className="display">{project.name}</h3>
+              <p>{project.tagline}</p>
+
+              {project.stats && (
+                <div className="project-stats-strip" aria-label="Project metrics">
+                  <span className="project-stat-pill" title="Lines of Code">
+                    <Code2 size={13} aria-hidden="true" />
+                    <span className="tabular-nums">{project.stats.linesOfCode}</span>
+                  </span>
+                  <span className="stat-separator" aria-hidden="true">
+                    ·
+                  </span>
+                  <span className="project-stat-pill" title="Completion Date">
+                    <Calendar size={13} aria-hidden="true" />
+                    <span>{project.stats.completionDate}</span>
+                  </span>
+                  <span className="stat-separator" aria-hidden="true">
+                    ·
+                  </span>
+                  <span className="project-stat-pill" title="Team Size">
+                    <Users size={13} aria-hidden="true" />
+                    <span>{project.stats.teamSize}</span>
+                  </span>
+                </div>
+              )}
+
+              <div className="tag-row">
+                {project.caseStudy.stack.slice(0, 5).map((tech) => (
+                  <span className="tag" key={tech}>
+                    {tech}
+                  </span>
+                ))}
               </div>
-            )}
-            <div className="work-head">
-              <p className="section-label">
-                {project.index} / {project.kind}
-              </p>
-              {project.verified ? (
-                <span className="verified-badge">
-                  <BadgeCheck size={13} aria-hidden="true" /> VERIFIED PROJECT
-                </span>
-              ) : null}
-            </div>
-            <h3 className="display">{project.name}</h3>
-            <p>{project.tagline}</p>
-            <div className="tag-row">
-              {project.caseStudy.stack.slice(0, 5).map((tech) => (
-                <span className="tag" key={tech}>
-                  {tech}
-                </span>
-              ))}
-            </div>
-            <div className="work-actions">
-              {baseProjects.some((base) => base.id === project.id) ? (
-                <InteractiveProjectButton id={project.id} />
-              ) : null}
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setOpenId(project.id);
-                  setEditing(false);
-                }}
-              >
-                Read case study
-              </Button>
-              {project.caseStudy.liveUrl ? (
-                <Button asChild variant="ghost">
-                  <a href={project.caseStudy.liveUrl} target="_blank" rel="noreferrer">
-                    Live site
-                  </a>
+              <div className="work-actions">
+                {baseProjects.some((base) => base.id === project.id) ? (
+                  <InteractiveProjectButton id={project.id} />
+                ) : null}
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setOpenId(project.id);
+                    setEditing(false);
+                  }}
+                >
+                  Read case study
                 </Button>
-              ) : null}
-              {project.caseStudy.repoUrl ? (
-                <Button asChild variant="ghost">
-                  <a href={project.caseStudy.repoUrl} target="_blank" rel="noreferrer">
-                    Source code
-                  </a>
-                </Button>
-              ) : null}
-            </div>
-          </article>
-        ))}
-      </div>
+                {project.caseStudy.liveUrl ? (
+                  <Button asChild variant="ghost">
+                    <a href={project.caseStudy.liveUrl} target="_blank" rel="noreferrer">
+                      Live site
+                    </a>
+                  </Button>
+                ) : null}
+                {project.caseStudy.repoUrl ? (
+                  <Button asChild variant="ghost">
+                    <a href={project.caseStudy.repoUrl} target="_blank" rel="noreferrer">
+                      Source code
+                    </a>
+                  </Button>
+                ) : null}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
 
       <div className="work-footer">
         <GeneratorDialog

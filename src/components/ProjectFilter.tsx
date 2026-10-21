@@ -1,97 +1,14 @@
-import { Layers, LayoutGrid, RotateCcw } from "lucide-react";
+import { Layers, LayoutGrid, RotateCcw, Search, X } from "lucide-react";
 import type { Project } from "@/lib/portfolio-data";
-
-export type FilterMode = "stack" | "type";
-
-export type FilterOption = {
-  id: string;
-  label: string;
-  matches: (project: Project) => boolean;
-};
-
-export const STACK_FILTERS: FilterOption[] = [
-  {
-    id: "all",
-    label: "All Stacks",
-    matches: () => true,
-  },
-  {
-    id: "mern",
-    label: "MERN Stack",
-    matches: (p) =>
-      p.kind.toUpperCase().includes("MERN") ||
-      (p.caseStudy.stack.some((s) => s.toLowerCase().includes("mongo")) &&
-        p.caseStudy.stack.some((s) => s.toLowerCase().includes("react"))),
-  },
-  {
-    id: "nextjs",
-    label: "Next.js & SQL",
-    matches: (p) =>
-      p.kind.toUpperCase().includes("NEXT") ||
-      p.caseStudy.stack.some(
-        (s) =>
-          s.toLowerCase().includes("next") ||
-          s.toLowerCase().includes("postgres") ||
-          s.toLowerCase().includes("prisma"),
-      ),
-  },
-  {
-    id: "react-express",
-    label: "React & Express",
-    matches: (p) =>
-      p.caseStudy.stack.some((s) => s.toLowerCase().includes("express")) &&
-      p.caseStudy.stack.some((s) => s.toLowerCase().includes("react")),
-  },
-  {
-    id: "ai-realtime",
-    label: "AI & Real-Time",
-    matches: (p) =>
-      p.kind.toUpperCase().includes("AI") ||
-      p.caseStudy.stack.some(
-        (s) =>
-          s.toLowerCase().includes("gemini") ||
-          s.toLowerCase().includes("socket") ||
-          s.toLowerCase().includes("webrtc"),
-      ),
-  },
-];
-
-export const TYPE_FILTERS: FilterOption[] = [
-  {
-    id: "all",
-    label: "All Types",
-    matches: () => true,
-  },
-  {
-    id: "ecommerce",
-    label: "E-Commerce",
-    matches: (p) =>
-      p.kind.toUpperCase().includes("COMMERCE") ||
-      p.tagline.toLowerCase().includes("shopping") ||
-      p.tagline.toLowerCase().includes("store"),
-  },
-  {
-    id: "ai-education",
-    label: "AI & Learning",
-    matches: (p) =>
-      p.kind.toUpperCase().includes("AI") ||
-      p.name.toLowerCase().includes("learning") ||
-      p.tagline.toLowerCase().includes("study"),
-  },
-  {
-    id: "platform",
-    label: "Social Platform",
-    matches: (p) =>
-      p.kind.toUpperCase().includes("MATRIMONY") ||
-      p.kind.toUpperCase().includes("PLATFORM"),
-  },
-];
+import { type FilterMode, STACK_FILTERS, TYPE_FILTERS } from "@/lib/project-filter";
 
 type ProjectFilterProps = {
   mode: FilterMode;
   onModeChange: (mode: FilterMode) => void;
   selectedFilter: string;
   onSelectFilter: (filterId: string) => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
   allProjects: Project[];
   filteredCount: number;
   onReset: () => void;
@@ -102,15 +19,49 @@ export function ProjectFilter({
   onModeChange,
   selectedFilter,
   onSelectFilter,
+  searchQuery,
+  onSearchChange,
   allProjects,
   filteredCount,
   onReset,
 }: ProjectFilterProps) {
   const currentOptions = mode === "stack" ? STACK_FILTERS : TYPE_FILTERS;
+  const hasActiveFilters = selectedFilter !== "all" || searchQuery.trim().length > 0;
 
   return (
-    <div className="project-filter-container" role="region" aria-label="Project filter options">
-      {/* Primary Categorization Dimension Toggle */}
+    <div className="project-filter-container" role="region" aria-label="Project filter and search">
+      {/* Search Input Bar */}
+      <div className="project-search-bar">
+        <label htmlFor="project-search" className="sr-only">
+          Search projects
+        </label>
+        <div className="project-search-wrapper">
+          <Search size={16} className="project-search-icon" aria-hidden="true" />
+          <input
+            id="project-search"
+            type="search"
+            className="project-search-input"
+            placeholder="Search projects by title, description, or stack (e.g. MERN, store, AI)..."
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            autoComplete="off"
+            spellCheck={false}
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => onSearchChange("")}
+              className="project-search-clear"
+              aria-label="Clear search input"
+              title="Clear search"
+            >
+              <X size={14} aria-hidden="true" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Primary Categorization Dimension Toggle & Summary Info */}
       <div className="project-filter-header">
         <div className="filter-mode-toggle" role="tablist" aria-label="Categorization criteria">
           <button
@@ -146,13 +97,13 @@ export function ProjectFilter({
           <span>
             {filteredCount} of {allProjects.length} projects
           </span>
-          {selectedFilter !== "all" && (
+          {hasActiveFilters && (
             <button
               type="button"
               onClick={onReset}
               className="filter-reset-btn"
-              title="Reset to all projects"
-              aria-label="Clear active filter"
+              title="Reset all filters"
+              aria-label="Clear active filters and search"
             >
               <RotateCcw size={11} aria-hidden="true" />
               <span>Reset</span>

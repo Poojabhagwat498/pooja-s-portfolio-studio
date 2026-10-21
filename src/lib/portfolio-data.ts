@@ -16,6 +16,12 @@ export type CaseStudy = {
   repoUrl: string;
 };
 
+export type ProjectStats = {
+  linesOfCode: string;
+  completionDate: string;
+  teamSize: string;
+};
+
 export type Project = {
   id: string;
   index: string;
@@ -24,6 +30,7 @@ export type Project = {
   tagline: string;
   image?: string;
   verified: boolean;
+  stats?: ProjectStats;
   caseStudy: CaseStudy;
 };
 
@@ -36,6 +43,11 @@ export const projects: Project[] = [
     tagline: "A full-stack jewellery shopping experience with its own admin control room.",
     image: jewelry,
     verified: true,
+    stats: {
+      linesOfCode: "4,800+ lines",
+      completionDate: "Dec 2024",
+      teamSize: "Solo build",
+    },
     caseStudy: {
       overview:
         "A full-stack jewellery e-commerce web application built with the MERN stack, covering product browsing, secure accounts and a dedicated admin dashboard.",
@@ -69,6 +81,11 @@ export const projects: Project[] = [
     tagline: "A study platform where an AI assistant, live rooms and flashcards sit side by side.",
     image: aiLearning,
     verified: true,
+    stats: {
+      linesOfCode: "6,200+ lines",
+      completionDate: "Jan 2025",
+      teamSize: "Solo build",
+    },
     caseStudy: {
       overview:
         "An AI-powered smart learning platform built on the MERN stack, with Google Gemini AI for study assistance and real-time collaboration between learners.",
@@ -102,6 +119,11 @@ export const projects: Project[] = [
     tagline: "A matchmaking platform built for trust, with layered security and live messaging.",
     image: matrimony,
     verified: true,
+    stats: {
+      linesOfCode: "8,500+ lines",
+      completionDate: "Feb 2025",
+      teamSize: "Team of 2",
+    },
     caseStudy: {
       overview:
         "A full-stack community matrimony platform built with Next.js 15, Prisma ORM and PostgreSQL, with layered authentication and AI-assisted match recommendations.",
@@ -144,6 +166,11 @@ export const projects: Project[] = [
     tagline: "A modern grocery store with a full admin control room and AI-powered features.",
     image: foodmart,
     verified: true,
+    stats: {
+      linesOfCode: "5,100+ lines",
+      completionDate: "Mar 2025",
+      teamSize: "Solo build",
+    },
     caseStudy: {
       overview:
         "A responsive grocery e-commerce platform built with React, TypeScript, Vite, Tailwind CSS and Express.js, covering the full shopping journey from browsing to order management.",
