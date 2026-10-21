@@ -1043,6 +1043,22 @@
     border-color 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, box-shadow, border-color;
 }
+@keyframes work-border-pulse {
+  from {
+    border-color: var(--border-glow-color);
+    box-shadow:
+      0 30px 64px var(--glass-shadow),
+      0 0 14px color-mix(in srgb, var(--primary) 30%, transparent),
+      0 0 4px color-mix(in srgb, var(--primary) 40%, transparent);
+  }
+  to {
+    border-color: var(--border-glow-shift);
+    box-shadow:
+      0 30px 64px var(--glass-shadow),
+      0 0 34px color-mix(in srgb, var(--primary) 52%, transparent),
+      0 0 12px color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+}
 .work-image::after {
   content: "";
   position: absolute;
@@ -1076,23 +1092,32 @@
 }
 .work-item:hover .work-image,
 .work-image:hover {
-  transform: translateY(-6px) perspective(1200px) rotateX(2.5deg) rotateY(-2deg);
+  transform: scale(1.03) translateY(-10px) perspective(1200px) rotateX(2.5deg) rotateY(-2deg);
   border-color: var(--border-glow-color);
   box-shadow:
-    0 26px 56px var(--glass-shadow),
+    0 30px 64px var(--glass-shadow),
     var(--border-glow-shadow);
+}
+.work-item:nth-child(even):hover .work-image {
+  transform: scale(1.03) translateY(-10px) perspective(1200px) rotateX(2.5deg) rotateY(2deg);
+  border-color: var(--border-glow-shift);
+  box-shadow:
+    0 30px 64px var(--glass-shadow),
+    0 0 24px color-mix(in srgb, var(--accent) 34%, transparent),
+    0 0 8px color-mix(in srgb, var(--primary) 46%, transparent);
+}
+@media (hover: hover) {
+  .work-item:hover .work-image,
+  .work-image:hover {
+    animation: work-border-pulse 0.5s ease-in-out infinite alternate;
+  }
+  .work-item:nth-child(even):hover .work-image {
+    animation: work-border-pulse 0.5s ease-in-out infinite alternate;
+  }
 }
 .work-item:hover .work-image img,
 .work-image:hover img {
   transform: scale(1.02) rotate(-0.6deg);
-}
-.work-item:nth-child(even):hover .work-image {
-  transform: translateY(-6px) perspective(1200px) rotateX(2.5deg) rotateY(2deg);
-  border-color: var(--border-glow-shift);
-  box-shadow:
-    0 26px 56px var(--glass-shadow),
-    0 0 24px color-mix(in srgb, var(--accent) 34%, transparent),
-    0 0 8px color-mix(in srgb, var(--primary) 46%, transparent);
 }
 .work-item:nth-child(even):hover .work-image img {
   transform: scale(1.02) rotate(0.6deg);
@@ -2941,6 +2966,7 @@
   .work-item:hover .work-image img {
     transition: none !important;
     transform: none !important;
+    animation: none !important;
   }
   .hero-orbit {
     animation: none;
