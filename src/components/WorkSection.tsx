@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
   BadgeCheck,
@@ -161,15 +161,7 @@ export function WorkSection() {
           {filteredItems.map((project) => (
             <article className="work-item" key={project.id}>
               {project.image ? (
-                <div className="work-image">
-                  <img
-                    src={project.image}
-                    alt={`${project.name} preview`}
-                    width={1600}
-                    height={900}
-                    loading="lazy"
-                  />
-                </div>
+                <MagneticWorkImage src={project.image} alt={`${project.name} preview`} />
               ) : (
                 <div className="work-image work-image-empty">
                   <span className="mono">CASE STUDY</span>
@@ -286,6 +278,42 @@ export function WorkSection() {
         </DialogContent>
       </Dialog>
     </section>
+  );
+}
+
+function MagneticWorkImage({ src, alt }: { src: string; alt: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const raf = useRef<number | undefined>(undefined);
+
+  const onMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    cancelAnimationFrame(raf.current);
+    raf.current = requestAnimationFrame(() => {
+      const rect = el.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      el.style.setProperty("--mx", px.toFixed(3));
+      el.style.setProperty("--my", py.toFixed(3));
+    });
+  }, []);
+
+  const onLeave = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    cancelAnimationFrame(raf.current);
+    raf.current = requestAnimationFrame(() => {
+      el.style.setProperty("--mx", "0");
+      el.style.setProperty("--my", "0");
+    });
+  }, []);
+
+  useEffect(() => () => cancelAnimationFrame(raf.current), []);
+
+  return (
+    <div className="work-image" ref={ref} onMouseMove={onMove} onMouseLeave={onLeave}>
+      <img src={src} alt={alt} width={1600} height={900} loading="lazy" />
+    </div>
   );
 }
 

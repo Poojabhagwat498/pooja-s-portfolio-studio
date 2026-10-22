@@ -1023,6 +1023,8 @@
   --border-glow-shadow:
     0 0 24px color-mix(in srgb, var(--primary) 36%, transparent),
     0 0 8px color-mix(in srgb, var(--primary) 50%, transparent);
+  --mx: 0;
+  --my: 0;
   position: relative;
   display: grid;
   place-items: center;
@@ -1117,10 +1119,38 @@
 }
 .work-item:hover .work-image img,
 .work-image:hover img {
-  transform: scale(1.02) rotate(-0.6deg);
+  transform:
+    scale(1.06)
+    translate(calc(var(--mx) * 18px), calc(var(--my) * 18px))
+    rotate(-0.6deg);
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.4s ease;
 }
 .work-item:nth-child(even):hover .work-image img {
-  transform: scale(1.02) rotate(0.6deg);
+  transform:
+    scale(1.06)
+    translate(calc(var(--mx) * 18px), calc(var(--my) * 18px))
+    rotate(0.6deg);
+}
+.work-image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at calc(50% + var(--mx) * 120px) calc(50% + var(--my) * 120px),
+    color-mix(in srgb, var(--primary) 22%, transparent) 0%,
+    transparent 45%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+  border-radius: inherit;
+}
+.work-item:hover .work-image::before,
+.work-image:hover::before {
+  opacity: 1;
 }
 .work-item .section-label {
   margin: 23px 0 12px;
