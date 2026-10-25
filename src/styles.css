@@ -994,7 +994,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .project-fade-in,
-  .work-grid.project-fade-in .work-item {
+  .work-grid.project-fade-in .work-item,
+  .work-image::before,
+  .work-image-ripple {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
@@ -1017,14 +1019,46 @@
 .work-item:nth-child(3n) {
   grid-column: 2 / span 7;
 }
+@keyframes work-image-glow-pulse {
+  0% {
+    border-color: color-mix(in srgb, var(--primary) 90%, var(--glass-border));
+    box-shadow:
+      0 26px 56px var(--glass-shadow),
+      0 0 16px color-mix(in srgb, var(--primary) 42%, transparent),
+      0 0 32px color-mix(in srgb, var(--primary) 22%, transparent);
+  }
+  100% {
+    border-color: color-mix(in srgb, var(--accent) 90%, var(--glass-border));
+    box-shadow:
+      0 30px 62px var(--glass-shadow),
+      0 0 24px color-mix(in srgb, var(--accent) 46%, transparent),
+      0 0 44px color-mix(in srgb, var(--accent) 26%, transparent);
+  }
+}
+
+@keyframes work-image-light-sweep {
+  0% {
+    transform: translate(-100%, -100%) rotate(35deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.95;
+  }
+  60% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(180%, 180%) rotate(35deg);
+    opacity: 0;
+  }
+}
+
 .work-image {
   --border-glow-color: color-mix(in srgb, var(--primary) 78%, var(--secondary) 22%);
   --border-glow-shift: color-mix(in srgb, var(--primary) 62%, var(--accent) 38%);
   --border-glow-shadow:
     0 0 24px color-mix(in srgb, var(--primary) 36%, transparent),
     0 0 8px color-mix(in srgb, var(--primary) 50%, transparent);
-  --mx: 0;
-  --my: 0;
   position: relative;
   display: grid;
   place-items: center;
@@ -1036,30 +1070,44 @@
   background: var(--glass-tint);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 16px 40px var(--glass-shadow);
+  box-shadow:
+    0 16px 40px var(--glass-shadow),
+    inset 0 1px 0 var(--glass-highlight);
   perspective: 1200px;
   transform-style: preserve-3d;
+  cursor: pointer;
   transition:
     transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
     border-color 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, box-shadow, border-color;
 }
-@keyframes work-border-pulse {
-  from {
-    border-color: var(--border-glow-color);
-    box-shadow:
-      0 30px 64px var(--glass-shadow),
-      0 0 14px color-mix(in srgb, var(--primary) 30%, transparent),
-      0 0 4px color-mix(in srgb, var(--primary) 40%, transparent);
-  }
-  to {
-    border-color: var(--border-glow-shift);
-    box-shadow:
-      0 30px 64px var(--glass-shadow),
-      0 0 34px color-mix(in srgb, var(--primary) 52%, transparent),
-      0 0 12px color-mix(in srgb, var(--accent) 50%, transparent);
-  }
+.work-image::before {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -60%;
+  width: 220%;
+  height: 220%;
+  background: linear-gradient(
+    125deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.06) 45%,
+    rgba(255, 255, 255, 0.4) 48.5%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(255, 255, 255, 0.4) 51.5%,
+    rgba(255, 255, 255, 0.06) 55%,
+    transparent 58%
+  );
+  transform: translate(-100%, -100%) rotate(35deg);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+  border-radius: inherit;
+}
+.work-item:hover .work-image::before,
+.work-image:hover::before {
+  animation: work-image-light-sweep 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .work-image::after {
   content: "";
@@ -1081,6 +1129,70 @@
 .work-image:hover::after {
   opacity: 1;
 }
+.work-image-expand-hint {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(11, 16, 36, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transform: translateY(-4px) scale(0.95);
+  transition:
+    opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.work-item:hover .work-image-expand-hint,
+.work-image:hover .work-image-expand-hint {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Click Ripple Animation on .work-image */
+@keyframes work-image-click-ripple {
+  0% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(0);
+  }
+  45% {
+    opacity: 0.65;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(3.5);
+  }
+}
+
+.work-image-ripple {
+  position: absolute;
+  width: min(220px, 35vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.88) 0%,
+    color-mix(in srgb, var(--primary) 75%, rgba(255, 255, 255, 0.4)) 35%,
+    color-mix(in srgb, var(--accent) 55%, transparent) 65%,
+    transparent 100%
+  );
+  animation: work-image-click-ripple 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 5;
+  will-change: transform, opacity;
+}
 .work-image img {
   width: 100%;
   height: 100%;
@@ -1094,63 +1206,135 @@
 }
 .work-item:hover .work-image,
 .work-image:hover {
-  transform: scale(1.03) translateY(-10px) perspective(1200px) rotateX(2.5deg) rotateY(-2deg);
-  border-color: var(--border-glow-color);
-  box-shadow:
-    0 30px 64px var(--glass-shadow),
-    var(--border-glow-shadow);
-}
-.work-item:nth-child(even):hover .work-image {
-  transform: scale(1.03) translateY(-10px) perspective(1200px) rotateX(2.5deg) rotateY(2deg);
-  border-color: var(--border-glow-shift);
-  box-shadow:
-    0 30px 64px var(--glass-shadow),
-    0 0 24px color-mix(in srgb, var(--accent) 34%, transparent),
-    0 0 8px color-mix(in srgb, var(--primary) 46%, transparent);
-}
-@media (hover: hover) {
-  .work-item:hover .work-image,
-  .work-image:hover {
-    animation: work-border-pulse 0.5s ease-in-out infinite alternate;
-  }
-  .work-item:nth-child(even):hover .work-image {
-    animation: work-border-pulse 0.5s ease-in-out infinite alternate;
-  }
+  transform: scale(1.03) translateY(-10px);
+  animation: work-image-glow-pulse 0.5s ease-in-out infinite alternate;
 }
 .work-item:hover .work-image img,
 .work-image:hover img {
-  transform:
-    scale(1.06)
-    translate(calc(var(--mx) * 18px), calc(var(--my) * 18px))
-    rotate(-0.6deg);
-  transition:
-    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-    filter 0.4s ease;
+  transform: scale(1.02) rotate(-0.5deg);
+}
+.work-item:nth-child(even):hover .work-image {
+  transform: scale(1.03) translateY(-10px);
+  animation: work-image-glow-pulse 0.5s ease-in-out infinite alternate;
 }
 .work-item:nth-child(even):hover .work-image img {
-  transform:
-    scale(1.06)
-    translate(calc(var(--mx) * 18px), calc(var(--my) * 18px))
-    rotate(0.6deg);
+  transform: scale(1.02) rotate(0.5deg);
 }
-.work-image::before {
-  content: "";
-  position: absolute;
+
+/* Full-Screen Project Image Expansion Modal */
+.image-modal-backdrop {
+  position: fixed;
   inset: 0;
-  background: radial-gradient(
-    circle at calc(50% + var(--mx) * 120px) calc(50% + var(--my) * 120px),
-    color-mix(in srgb, var(--primary) 22%, transparent) 0%,
-    transparent 45%
-  );
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 2;
-  border-radius: inherit;
+  z-index: 9999;
+  background: rgba(5, 8, 22, 0.88);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 3vw, 36px);
+  animation: modal-backdrop-in 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.work-item:hover .work-image::before,
-.work-image:hover::before {
-  opacity: 1;
+@keyframes modal-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.image-modal-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(94vw, 1260px);
+  max-height: 92vh;
+  border-radius: 24px;
+  background: rgba(11, 16, 36, 0.94);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 32px 80px rgba(0, 0, 0, 0.65),
+    0 0 32px color-mix(in srgb, var(--primary) 30%, transparent);
+  overflow: hidden;
+  animation: modal-card-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes modal-card-in {
+  from {
+    transform: scale(0.92) translateY(14px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+.image-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--glass-border);
+  background: rgba(5, 8, 22, 0.7);
+}
+.image-modal-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.image-modal-info h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(20px, 3vw, 28px);
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+.image-modal-info span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+}
+.image-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--glass-border);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+.image-modal-close:hover {
+  background: var(--card);
+  color: var(--primary);
+  transform: scale(1.08);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--primary) 40%, transparent);
+}
+.image-modal-close:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.image-modal-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  max-height: calc(92vh - 80px);
+  background: rgba(3, 5, 15, 0.96);
+  padding: 16px;
+}
+.image-modal-body img {
+  width: 100%;
+  height: auto;
+  max-height: calc(92vh - 115px);
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
 }
 .work-item .section-label {
   margin: 23px 0 12px;
@@ -2996,7 +3180,6 @@
   .work-item:hover .work-image img {
     transition: none !important;
     transform: none !important;
-    animation: none !important;
   }
   .hero-orbit {
     animation: none;

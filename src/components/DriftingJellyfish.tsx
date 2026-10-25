@@ -11,13 +11,22 @@ import { THEME_EVENT } from "@/lib/theme";
 /* Section accent colors — the jellyfish shifts glow to match          */
 /* ------------------------------------------------------------------ */
 
-const SECTION_ACCENTS: { id: string; glow: THREE.Color; label: string }[] = [
+const SECTION_ACCENTS_LIGHT: { id: string; glow: THREE.Color; label: string }[] = [
   { id: "top", glow: new THREE.Color("#2563EB"), label: "Hi!" },
   { id: "about", glow: new THREE.Color("#2563EB"), label: "About" },
   { id: "experience", glow: new THREE.Color("#7C3AED"), label: "Experience" },
   { id: "skills", glow: new THREE.Color("#10B981"), label: "Skills" },
   { id: "achievements", glow: new THREE.Color("#F59E0B"), label: "Awards" },
   { id: "contact", glow: new THREE.Color("#EC4899"), label: "Contact" },
+];
+
+const SECTION_ACCENTS_DARK: { id: string; glow: THREE.Color; label: string }[] = [
+  { id: "top", glow: new THREE.Color("#00F5D4"), label: "Hi!" }, // Bioluminescent aqua
+  { id: "about", glow: new THREE.Color("#38BDF8"), label: "About" }, // Electric sky cyan
+  { id: "experience", glow: new THREE.Color("#C084FC"), label: "Experience" }, // Luminous orchid
+  { id: "skills", glow: new THREE.Color("#34D399"), label: "Skills" }, // Radiant neon mint
+  { id: "achievements", glow: new THREE.Color("#FBBF24"), label: "Awards" }, // Golden glow
+  { id: "contact", glow: new THREE.Color("#F472B6"), label: "Contact" }, // Bioluminescent neon rose
 ];
 
 const FUN_FACTS = [
@@ -77,13 +86,22 @@ void main() {
   float h = clamp((vP.y + 0.1) / 1.16, 0.0, 1.0);
   float ang = atan(vP.z, vP.x);
 
-  // tint the base toward the section glow color; deeper, richer hues in dark mode
-  vec3 top = mix(vec3(0.50, 0.58, 1.00), uGlow, 0.35 + uDark * 0.25);
-  vec3 mid = mix(vec3(0.50, 0.84, 1.00), uGlow, 0.28 + uDark * 0.25);
-  vec3 rim = mix(vec3(0.88, 0.98, 1.00), uGlow, uDark * 0.35);
+  // In light mode: soft daylight blue/lavender tones.
+  // In dark mode: radiant deep-sea bioluminescent cyan, violet, and electric neon hues.
+  vec3 topLight = mix(vec3(0.50, 0.58, 1.00), uGlow, 0.35);
+  vec3 midLight = mix(vec3(0.50, 0.84, 1.00), uGlow, 0.28);
+  vec3 rimLight = mix(vec3(0.88, 0.98, 1.00), uGlow, 0.15);
+
+  vec3 topDark  = mix(vec3(0.08, 0.12, 0.48), uGlow, 0.82);
+  vec3 midDark  = mix(vec3(0.00, 0.72, 0.92), uGlow, 0.76);
+  vec3 rimDark  = mix(vec3(0.40, 0.98, 1.00), uGlow, 0.88);
+
+  vec3 top = mix(topLight, topDark, uDark);
+  vec3 mid = mix(midLight, midDark, uDark);
+  vec3 rim = mix(rimLight, rimDark, uDark);
   vec3 col = mix(mid, top, h * h);
   col = mix(col, rim, fr);
-  col += uDark * uGlow * 0.15;
+  col += uDark * uGlow * 0.42;
 
   float canal = pow(abs(cos(ang * 8.0)), 60.0) * smoothstep(0.02, 0.15, h) * (1.0 - smoothstep(0.9, 1.0, h));
   float stria = (0.5 + 0.5 * sin(vP.y * 70.0)) * (1.0 - smoothstep(0.0, 0.45, h)) * 0.08;
@@ -91,13 +109,14 @@ void main() {
   float band = 1.0 - smoothstep(0.0, 0.16, vP.y + 0.1);
 
   float wave = 0.5 + 0.5 * sin(h * 10.0 - uTime * 3.5);
-  col += canal * mix(vec3(0.45, 0.65, 1.0), uGlow, 0.45) * (0.35 + 0.9 * wave);
-  col += spots * vec3(0.9, 1.0, 1.0) * 0.8;
-  col += band * mix(vec3(0.95, 0.65, 1.0), uGlow, 0.5) * (0.55 + uBoost * 0.6);
+  vec3 canalTint = mix(mix(vec3(0.45, 0.65, 1.0), vec3(0.1, 0.95, 0.95), uDark), uGlow, 0.55);
+  col += canal * canalTint * (0.35 + 0.9 * wave + uDark * 0.45);
+  col += spots * mix(vec3(0.9, 1.0, 1.0), vec3(0.6, 1.0, 0.92), uDark) * (0.8 + uDark * 0.5);
+  col += band * mix(vec3(0.95, 0.65, 1.0), uGlow, 0.5 + uDark * 0.35) * (0.55 + uBoost * 0.6 + uDark * 0.3);
   col += stria;
   col += uBoost * uGlow * 0.25;
 
-  float alpha = 0.2 + fr * 0.6 + canal * 0.3 + spots * 0.5 + band * 0.45 + uBoost * 0.1 + uDark * 0.12;
+  float alpha = 0.2 + fr * 0.6 + canal * 0.3 + spots * 0.5 + band * 0.45 + uBoost * 0.1 + uDark * 0.22;
   gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.96) * uFade);
 }`;
 
@@ -141,14 +160,16 @@ void main() {
   if (!gl_FrontFacing) N = -N;
   float fr = pow(1.0 - clamp(abs(dot(N, normalize(vV))), 0.0, 1.0), 1.5);
   float k = smoothstep(0.0, uLen, vDepth);
-  vec3 col = mix(uColor, uColor2, k);
-  col = mix(col, uGlow, (uFlare * 0.4 + uDark * 0.35) * (1.0 - k));
+  vec3 baseCol = mix(uColor, uColor2, k);
+  vec3 darkCol = mix(vec3(0.05, 0.88, 0.98), vec3(0.78, 0.40, 0.98), k);
+  vec3 col = mix(baseCol, darkCol, uDark * 0.85);
+  col = mix(col, uGlow, (uFlare * 0.4 + uDark * 0.55) * (1.0 - k));
   float bead = pow(0.5 + 0.5 * sin(vDepth * 42.0), 8.0) * uBead;
-  col += bead * 0.5;
+  col += bead * (0.5 + uDark * 0.5);
   float glow = pow(0.5 + 0.5 * sin(vDepth * 5.0 - uTime * 3.0), 6.0) * (1.0 - k);
-  col += glow * mix(vec3(0.6, 0.9, 1.0), uGlow, 0.4 + uDark * 0.3) * (0.6 + uFlare * 0.5);
-  col += uDark * uGlow * 0.18 * (1.0 - k);
-  float a = uAlpha * (0.4 + 0.6 * fr) * (1.0 - k * 0.85) + bead * 0.25 * (1.0 - k) + glow * 0.3 + uFlare * 0.15 + uDark * 0.1 * (1.0 - k);
+  col += glow * mix(vec3(0.6, 0.9, 1.0), uGlow, 0.4 + uDark * 0.45) * (0.6 + uFlare * 0.5 + uDark * 0.4);
+  col += uDark * uGlow * 0.35 * (1.0 - k);
+  float a = uAlpha * (0.4 + 0.6 * fr) * (1.0 - k * 0.85) + bead * 0.25 * (1.0 - k) + glow * 0.3 + uFlare * 0.15 + uDark * 0.22 * (1.0 - k);
   gl_FragColor = vec4(col, clamp(a, 0.0, 1.0) * uFade);
 }`;
 
@@ -629,9 +650,10 @@ export function DriftingJellyfish() {
 
   const activeSection = useActiveSection();
   const glow = useMemo(() => {
-    const found = SECTION_ACCENTS.find((s) => s.id === activeSection);
-    return found ? found.glow : SECTION_ACCENTS[0].glow;
-  }, [activeSection]);
+    const list = isDark ? SECTION_ACCENTS_DARK : SECTION_ACCENTS_LIGHT;
+    const found = list.find((s) => s.id === activeSection);
+    return found ? found.glow : list[0].glow;
+  }, [activeSection, isDark]);
 
   // depth fade — shrink and fade as you scroll past hero
   const fade = useMemo(() => {
@@ -640,7 +662,7 @@ export function DriftingJellyfish() {
     const vh = typeof window !== "undefined" ? window.innerHeight : 800;
     const depth = Math.min(1, sy / (vh * 2));
     return 1 - depth * 0.55;
-  }, [pathname, activeSection]);
+  }, [pathname]);
 
   /* Position the floating button — right side in hero, corner otherwise */
   useEffect(() => {
@@ -724,7 +746,12 @@ export function DriftingJellyfish() {
     const update = () => setIsDark(document.documentElement.classList.contains("dark"));
     update();
     window.addEventListener(THEME_EVENT, update);
-    return () => window.removeEventListener(THEME_EVENT, update);
+    const observer = new MutationObserver(() => update());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => {
+      window.removeEventListener(THEME_EVENT, update);
+      observer.disconnect();
+    };
   }, []);
 
   /* Whole-page cursor following — the jellyfish button eases toward the mouse */

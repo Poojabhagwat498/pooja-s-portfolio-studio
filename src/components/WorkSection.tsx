@@ -1,14 +1,16 @@
-import { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
   BadgeCheck,
   Calendar,
   Code2,
   Loader2,
+  Maximize2,
   Pencil,
   RotateCcw,
   Sparkle,
   Users,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,6 +54,26 @@ export function WorkSection() {
   const [mode, setMode] = useState<FilterMode>("stack");
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [previewImage, setPreviewImage] = useState<{
+    src: string;
+    alt: string;
+    title: string;
+    subtitle: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!previewImage) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPreviewImage(null);
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [previewImage]);
 
   useEffect(() => {
     setHydrated(true);
@@ -85,6 +107,34 @@ export function WorkSection() {
       }
     }
   }
+
+  const handleImageTrigger = (
+    target: HTMLElement,
+    originX?: number,
+    originY?: number,
+    project?: Project,
+  ) => {
+    if (!project?.image) return;
+    const rect = target.getBoundingClientRect();
+    const x = typeof originX === "number" ? originX - rect.left : rect.width / 2;
+    const y = typeof originY === "number" ? originY - rect.top : rect.height / 2;
+
+    const ripple = document.createElement("span");
+    ripple.className = "work-image-ripple";
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+    target.appendChild(ripple);
+    window.setTimeout(() => ripple.remove(), 700);
+
+    window.setTimeout(() => {
+      setPreviewImage({
+        src: project.image!,
+        alt: `${project.name} preview`,
+        title: project.name,
+        subtitle: `${project.index} / ${project.kind}`,
+      });
+    }, 140);
+  };
 
   const filteredItems = useMemo(() => {
     const options = mode === "stack" ? STACK_FILTERS : TYPE_FILTERS;
@@ -161,7 +211,33 @@ export function WorkSection() {
           {filteredItems.map((project) => (
             <article className="work-item" key={project.id}>
               {project.image ? (
-                <MagneticWorkImage src={project.image} alt={`${project.name} preview`} />
+                <div
+                  className="work-image"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Open full-screen preview of ${project.name}`}
+                  onClick={(e) => {
+                    handleImageTrigger(e.currentTarget, e.clientX, e.clientY, project);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleImageTrigger(e.currentTarget, undefined, undefined, project);
+                    }
+                  }}
+                >
+                  <div className="work-image-expand-hint" aria-hidden="true">
+                    <Maximize2 size={12} />
+                    <span>EXPAND</span>
+                  </div>
+                  <img
+                    src={project.image}
+                    alt={`${project.name} preview`}
+                    width={1600}
+                    height={900}
+                    loading="lazy"
+                  />
+                </div>
               ) : (
                 <div className="work-image work-image-empty">
                   <span className="mono">CASE STUDY</span>
@@ -277,43 +353,37 @@ export function WorkSection() {
           ) : null}
         </DialogContent>
       </Dialog>
+
+      {previewImage && (
+        <div
+          className="image-modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${previewImage.title} preview`}
+          onClick={() => setPreviewImage(null)}
+        >
+          <div className="image-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="image-modal-header">
+              <div className="image-modal-info">
+                <span>{previewImage.subtitle}</span>
+                <h3>{previewImage.title}</h3>
+              </div>
+              <button
+                type="button"
+                className="image-modal-close"
+                aria-label="Close image preview"
+                onClick={() => setPreviewImage(null)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="image-modal-body">
+              <img src={previewImage.src} alt={previewImage.alt} />
+            </div>
+          </div>
+        </div>
+      )}
     </section>
-  );
-}
-
-function MagneticWorkImage({ src, alt }: { src: string; alt: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const raf = useRef<number | undefined>(undefined);
-
-  const onMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const el = ref.current;
-    if (!el) return;
-    cancelAnimationFrame(raf.current);
-    raf.current = requestAnimationFrame(() => {
-      const rect = el.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width - 0.5;
-      const py = (e.clientY - rect.top) / rect.height - 0.5;
-      el.style.setProperty("--mx", px.toFixed(3));
-      el.style.setProperty("--my", py.toFixed(3));
-    });
-  }, []);
-
-  const onLeave = useCallback(() => {
-    const el = ref.current;
-    if (!el) return;
-    cancelAnimationFrame(raf.current);
-    raf.current = requestAnimationFrame(() => {
-      el.style.setProperty("--mx", "0");
-      el.style.setProperty("--my", "0");
-    });
-  }, []);
-
-  useEffect(() => () => cancelAnimationFrame(raf.current), []);
-
-  return (
-    <div className="work-image" ref={ref} onMouseMove={onMove} onMouseLeave={onLeave}>
-      <img src={src} alt={alt} width={1600} height={900} loading="lazy" />
-    </div>
   );
 }
 
