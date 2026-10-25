@@ -226,6 +226,7 @@ export function WorkSection() {
                     }
                   }}
                 >
+                  <div className="work-image-border-glow" aria-hidden="true" />
                   <div className="work-image-expand-hint" aria-hidden="true">
                     <Maximize2 size={12} />
                     <span>EXPAND</span>
@@ -240,6 +241,7 @@ export function WorkSection() {
                 </div>
               ) : (
                 <div className="work-image work-image-empty">
+                  <div className="work-image-border-glow" aria-hidden="true" />
                   <span className="mono">CASE STUDY</span>
                 </div>
               )}

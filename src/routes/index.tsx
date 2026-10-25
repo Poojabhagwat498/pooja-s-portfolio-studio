@@ -9,7 +9,7 @@ import { BookCallDialog } from "@/components/BookCallDialog";
 import { PortfolioMotion } from "@/components/PortfolioMotion";
 import Text3DFlip from "@/components/Text3DFlip";
 import { RESUME_URL, achievements, contact, education, experience } from "@/lib/portfolio-data";
-import portraitAsset from "@/assets/pooja-portrait.jpg.asset.json";
+import poojaPortrait from "@/assets/pooja-portrait.jpg";
 
 const TITLE = "Pooja Bhagwat | Computer Science Engineer & MERN Stack Developer";
 const DESCRIPTION =
@@ -210,10 +210,11 @@ function Index() {
         <div className="about-grid">
           <figure className="about-portrait">
             <img
-              src={portraitAsset.url}
+              src={poojaPortrait}
               alt="Portrait of Pooja Bhagwat in a black blazer and white shirt"
               width={1254}
               height={1254}
+              loading="lazy"
             />
             <figcaption className="mono">POOJA BHAGWAT · NASHIK, INDIA</figcaption>
           </figure>

@@ -775,12 +775,19 @@
 }
 .about-portrait img {
   width: 100%;
-  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
   display: block;
   border-radius: var(--glass-radius);
-  filter: grayscale(8%) contrast(1.02);
   border: 1px solid var(--glass-border);
   box-shadow: 0 24px 60px var(--glass-shadow);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.about-portrait:hover img {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow:
+    0 28px 64px var(--glass-shadow),
+    0 0 24px color-mix(in srgb, var(--primary) 20%, transparent);
 }
 .about-portrait figcaption {
   font-size: 11px;
@@ -996,7 +1003,8 @@
   .project-fade-in,
   .work-grid.project-fade-in .work-item,
   .work-image::before,
-  .work-image-ripple {
+  .work-image-ripple,
+  .work-image-border-glow::before {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
@@ -1051,6 +1059,64 @@
     transform: translate(180%, 180%) rotate(35deg);
     opacity: 0;
   }
+}
+
+/* Subtle, slow-rotating border gradient overlay highlighting glass edges */
+@keyframes border-rotate-glow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.work-image-border-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.78;
+  transition: opacity 0.35s ease;
+}
+
+.dark .work-image-border-glow {
+  opacity: 0.92;
+}
+
+.work-item:hover .work-image-border-glow,
+.work-image:hover .work-image-border-glow {
+  opacity: 1;
+}
+
+.work-image-border-glow::before {
+  content: "";
+  position: absolute;
+  top: -75%;
+  left: -75%;
+  width: 250%;
+  height: 250%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    color-mix(in srgb, var(--primary) 95%, transparent) 40deg,
+    color-mix(in srgb, var(--accent) 90%, transparent) 85deg,
+    transparent 135deg,
+    transparent 180deg,
+    color-mix(in srgb, var(--secondary) 88%, transparent) 220deg,
+    color-mix(in srgb, var(--primary) 95%, transparent) 265deg,
+    transparent 315deg,
+    transparent 360deg
+  );
+  animation: border-rotate-glow 11s linear infinite;
+  will-change: transform;
 }
 
 .work-image {
