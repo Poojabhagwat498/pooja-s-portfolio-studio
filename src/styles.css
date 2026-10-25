@@ -1274,33 +1274,31 @@
 /* Click Ripple Animation on .work-image */
 @keyframes work-image-click-ripple {
   0% {
-    opacity: 0.85;
+    opacity: 0.95;
     transform: translate(-50%, -50%) scale(0);
   }
-  45% {
-    opacity: 0.65;
+  35% {
+    opacity: 0.8;
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(3.5);
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 
 .work-image-ripple {
   position: absolute;
-  width: min(220px, 35vw);
-  aspect-ratio: 1;
   border-radius: 50%;
   pointer-events: none;
   background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.88) 0%,
-    color-mix(in srgb, var(--primary) 75%, rgba(255, 255, 255, 0.4)) 35%,
-    color-mix(in srgb, var(--accent) 55%, transparent) 65%,
+    circle closest-side,
+    rgba(255, 255, 255, 0.95) 0%,
+    color-mix(in srgb, var(--primary) 85%, rgba(255, 255, 255, 0.5)) 22%,
+    color-mix(in srgb, var(--accent) 70%, transparent) 55%,
     transparent 100%
   );
-  animation: work-image-click-ripple 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  z-index: 5;
+  animation: work-image-click-ripple 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 10;
   will-change: transform, opacity;
 }
 .work-image img {

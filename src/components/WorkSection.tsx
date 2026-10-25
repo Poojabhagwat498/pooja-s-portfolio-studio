@@ -114,26 +114,37 @@ export function WorkSection() {
     originY?: number,
     project?: Project,
   ) => {
-    if (!project?.image) return;
     const rect = target.getBoundingClientRect();
     const x = typeof originX === "number" ? originX - rect.left : rect.width / 2;
     const y = typeof originY === "number" ? originY - rect.top : rect.height / 2;
+    const size = Math.max(rect.width, rect.height) * 2.2;
 
     const ripple = document.createElement("span");
     ripple.className = "work-image-ripple";
     ripple.style.left = `${x}px`;
     ripple.style.top = `${y}px`;
-    target.appendChild(ripple);
-    window.setTimeout(() => ripple.remove(), 700);
+    ripple.style.width = `${size}px`;
+    ripple.style.height = `${size}px`;
 
+    target.appendChild(ripple);
+
+    ripple.addEventListener("animationend", () => {
+      ripple.remove();
+    });
     window.setTimeout(() => {
-      setPreviewImage({
-        src: project.image!,
-        alt: `${project.name} preview`,
-        title: project.name,
-        subtitle: `${project.index} / ${project.kind}`,
-      });
-    }, 140);
+      if (ripple.parentNode) ripple.remove();
+    }, 850);
+
+    if (project?.image) {
+      window.setTimeout(() => {
+        setPreviewImage({
+          src: project.image!,
+          alt: `${project.name} preview`,
+          title: project.name,
+          subtitle: `${project.index} / ${project.kind}`,
+        });
+      }, 260);
+    }
   };
 
   const filteredItems = useMemo(() => {
@@ -240,7 +251,21 @@ export function WorkSection() {
                   />
                 </div>
               ) : (
-                <div className="work-image work-image-empty">
+                <div
+                  className="work-image work-image-empty"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${project.name} case study preview`}
+                  onClick={(e) => {
+                    handleImageTrigger(e.currentTarget, e.clientX, e.clientY);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleImageTrigger(e.currentTarget);
+                    }
+                  }}
+                >
                   <div className="work-image-border-glow" aria-hidden="true" />
                   <span className="mono">CASE STUDY</span>
                 </div>
