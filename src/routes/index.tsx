@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowUpRight, Download, FileText, Mail, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,45 @@ import { PortfolioMotion } from "@/components/PortfolioMotion";
 import Text3DFlip from "@/components/Text3DFlip";
 import { RESUME_URL, achievements, contact, education, experience } from "@/lib/portfolio-data";
 import poojaPortrait from "@/assets/pooja-portrait.jpg";
+
+const PORTRAIT_PLACEHOLDER =
+  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAYABgDASIAAhEBAxEB/8QAGQABAAMBAQAAAAAAAAAAAAAAAAECBQMG/8QAJxAAAgEDAgUEAwAAAAAAAAAAAQIDAAQRBSESEyIxUQZBYXHB0fH/xAAWAQEBAQAAAAAAAAAAAAAAAAACAQD/xAAbEQEAAgIDAAAAAAAAAAAAAAAAAQIREiEiMf/aAAwDAQACEQMRAD8Ai2Tgs0kGeJcbDxV5Lq4WGSeO3V7SJ8NlsOcbEgfH4q1vNCuldTgEADc49q5i6Y6NLMIY26XZcr3AJwT84oW4Onb1sRW0TqrK2Sdx4x5pU2l/aNbROZgqrGCT2HalPAbPDajLtbxg7BMn7P8AK1YrtF9GzR7czn8ofR6v3SlWGZWmSgtcRPwlGjJwR7jtSlKkq//Z";
+
+function AboutPortrait() {
+  const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (imgRef.current?.complete) {
+      setLoaded(true);
+    }
+  }, []);
+
+  return (
+    <figure className="about-portrait">
+      <div className={`about-portrait-frame ${loaded ? "is-loaded" : "is-loading"}`}>
+        <img
+          src={PORTRAIT_PLACEHOLDER}
+          alt=""
+          aria-hidden="true"
+          className="about-portrait-placeholder"
+        />
+        <img
+          ref={imgRef}
+          src={poojaPortrait}
+          alt="Portrait of Pooja Bhagwat in a black blazer and white shirt"
+          width={1254}
+          height={1254}
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          className="about-portrait-img"
+        />
+      </div>
+      <figcaption className="mono">POOJA BHAGWAT · NASHIK, INDIA</figcaption>
+    </figure>
+  );
+}
 
 const TITLE = "Pooja Bhagwat | Computer Science Engineer & MERN Stack Developer";
 const DESCRIPTION =
@@ -208,16 +248,7 @@ function Index() {
           THE WAY I BUILD.
         </h2>
         <div className="about-grid">
-          <figure className="about-portrait">
-            <img
-              src={poojaPortrait}
-              alt="Portrait of Pooja Bhagwat in a black blazer and white shirt"
-              width={1254}
-              height={1254}
-              loading="lazy"
-            />
-            <figcaption className="mono">POOJA BHAGWAT · NASHIK, INDIA</figcaption>
-          </figure>
+          <AboutPortrait />
           <div className="about-text">
             <p className="about-lead">Curiosity meets intention. Ideas meet working software.</p>
             <p className="about-copy">
