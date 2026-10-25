@@ -150,6 +150,27 @@ export function PortfolioMotion() {
             animations.push(trigger);
           });
         }
+
+        // Subtle scroll-based parallax on About portrait frame (moves in opposite direction of scroll)
+        const portraitFrame = document.querySelector<HTMLElement>(".about-portrait-frame");
+        const aboutSection = document.querySelector<HTMLElement>("#about");
+        if (portraitFrame && aboutSection) {
+          const portraitParallax = gsap.fromTo(
+            portraitFrame,
+            { y: 32 },
+            {
+              y: -32,
+              ease: "none",
+              scrollTrigger: {
+                trigger: aboutSection,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 1,
+              },
+            },
+          );
+          animations.push(portraitParallax);
+        }
         const pointerCleanup = cleanup;
         cleanup = () => {
           pointerCleanup?.();

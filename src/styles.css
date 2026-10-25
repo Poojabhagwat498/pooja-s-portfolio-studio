@@ -782,13 +782,17 @@
   box-shadow: 0 24px 60px var(--glass-shadow);
   overflow: hidden;
   background: var(--surface-dark, #0b1024);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+  will-change: transform;
 }
 .about-portrait:hover .about-portrait-frame {
-  transform: translateY(-4px) scale(1.01);
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--glass-border));
   box-shadow:
     0 28px 64px var(--glass-shadow),
     0 0 24px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+.about-portrait:hover .about-portrait-frame.is-loaded .about-portrait-img {
+  transform: scale(1.03);
 }
 .about-portrait-placeholder {
   position: absolute;
