@@ -15,6 +15,7 @@ const SECTION_ACCENTS_LIGHT: { id: string; glow: THREE.Color; label: string }[] 
   { id: "top", glow: new THREE.Color("#2563EB"), label: "Hi!" },
   { id: "about", glow: new THREE.Color("#2563EB"), label: "About" },
   { id: "experience", glow: new THREE.Color("#7C3AED"), label: "Experience" },
+  { id: "pipeline", glow: new THREE.Color("#0EA5E9"), label: "CI/CD" },
   { id: "skills", glow: new THREE.Color("#10B981"), label: "Skills" },
   { id: "achievements", glow: new THREE.Color("#F59E0B"), label: "Awards" },
   { id: "contact", glow: new THREE.Color("#EC4899"), label: "Contact" },
@@ -24,6 +25,7 @@ const SECTION_ACCENTS_DARK: { id: string; glow: THREE.Color; label: string }[] =
   { id: "top", glow: new THREE.Color("#00F5D4"), label: "Hi!" }, // Bioluminescent aqua
   { id: "about", glow: new THREE.Color("#38BDF8"), label: "About" }, // Electric sky cyan
   { id: "experience", glow: new THREE.Color("#C084FC"), label: "Experience" }, // Luminous orchid
+  { id: "pipeline", glow: new THREE.Color("#06B6D4"), label: "CI/CD" }, // Neon cyan
   { id: "skills", glow: new THREE.Color("#34D399"), label: "Skills" }, // Radiant neon mint
   { id: "achievements", glow: new THREE.Color("#FBBF24"), label: "Awards" }, // Golden glow
   { id: "contact", glow: new THREE.Color("#F472B6"), label: "Contact" }, // Bioluminescent neon rose

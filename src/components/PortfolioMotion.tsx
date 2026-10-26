@@ -70,7 +70,7 @@ export function PortfolioMotion() {
         });
         sections.forEach((section) => {
           const targets = section.querySelectorAll<HTMLElement>(
-            ".section-label, .about-portrait, .about-lead, .about-copy, .about-actions, .role, .principle, .skill-card, .education-item, .now-grid > div, .contact-line, .contact-copy, .contact-form, .blog-intro, .blog-empty",
+            ".section-label, .about-portrait, .about-lead, .about-copy, .about-actions, .role, .pipeline-toolbar, .pipeline-stage-card, .pipeline-console-card, .devops-tools-strip, .principle, .skill-card, .education-item, .now-grid > div, .contact-line, .contact-copy, .contact-form, .blog-intro, .blog-empty",
           );
           if (!targets.length) return;
           const animation = gsap.fromTo(

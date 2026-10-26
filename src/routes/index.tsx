@@ -11,6 +11,7 @@ import { PortfolioMotion } from "@/components/PortfolioMotion";
 import Text3DFlip from "@/components/Text3DFlip";
 import { RESUME_URL, achievements, contact, education, experience } from "@/lib/portfolio-data";
 import poojaPortrait from "@/assets/pooja-portrait.jpg";
+import { DevOpsPipeline } from "@/components/DevOpsPipeline";
 
 const PORTRAIT_PLACEHOLDER =
   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAYABgDASIAAhEBAxEB/8QAGQABAAMBAQAAAAAAAAAAAAAAAAECBQMG/8QAJxAAAgEDAgUEAwAAAAAAAAAAAQIDAAQRBSESEyIxUQZBYXHB0fH/xAAWAQEBAQAAAAAAAAAAAAAAAAACAQD/xAAbEQEAAgIDAAAAAAAAAAAAAAAAAQIREiEiMf/aAAwDAQACEQMRAD8Ai2Tgs0kGeJcbDxV5Lq4WGSeO3V7SJ8NlsOcbEgfH4q1vNCuldTgEADc49q5i6Y6NLMIY26XZcr3AJwT84oW4Onb1sRW0TqrK2Sdx4x5pU2l/aNbROZgqrGCT2HalPAbPDajLtbxg7BMn7P8AK1YrtF9GzR7czn8ofR6v3SlWGZWmSgtcRPwlGjJwR7jtSlKkq//Z";
@@ -117,6 +118,7 @@ function Index() {
         </a>
         <a href="#about">About</a>
         <a href="#experience">Experience</a>
+        <a href="#pipeline">CI/CD</a>
         <a href="#projects">Projects</a>
         <Link to="/portfolio">Portfolio</Link>
         <Link to="/blog">Blog</Link>
@@ -313,6 +315,8 @@ function Index() {
           </div>
         </article>
       </section>
+
+      <DevOpsPipeline />
 
       <section className="section page-gutter principles" aria-labelledby="principles-title">
         <p className="section-label">// HOW I APPROACH THINGS</p>

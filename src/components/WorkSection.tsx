@@ -60,6 +60,11 @@ export function WorkSection() {
     title: string;
     subtitle: string;
   } | null>(null);
+  const [flippedId, setFlippedId] = useState<string | null>(null);
+
+  const toggleFlip = (id: string) => {
+    setFlippedId((current) => (current === id ? null : id));
+  };
 
   useEffect(() => {
     if (!previewImage) return;
@@ -163,6 +168,7 @@ export function WorkSection() {
   const handleReset = () => {
     setSelectedFilter("all");
     setSearchQuery("");
+    setFlippedId(null);
   };
 
   return (
@@ -219,130 +225,258 @@ export function WorkSection() {
           key={`work-grid-${mode}-${selectedFilter}-${searchQuery}`}
           className="work-grid project-fade-in"
         >
-          {filteredItems.map((project) => (
-            <article className="work-item" key={project.id}>
-              {project.image ? (
-                <div
-                  className="work-image"
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`Open full-screen preview of ${project.name}`}
-                  onClick={(e) => {
-                    handleImageTrigger(e.currentTarget, e.clientX, e.clientY, project);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      handleImageTrigger(e.currentTarget, undefined, undefined, project);
-                    }
-                  }}
-                >
-                  <div className="work-image-border-glow" aria-hidden="true" />
-                  <div className="work-image-expand-hint" aria-hidden="true">
-                    <Maximize2 size={12} />
-                    <span>EXPAND</span>
+          {filteredItems.map((project) => {
+            const isFlipped = flippedId === project.id;
+            return (
+              <article
+                className={`work-item ${isFlipped ? "is-flipped" : ""}`}
+                key={project.id}
+                onClick={(e) => {
+                  const target = e.target as HTMLElement;
+                  if (target.closest("button, a, .work-image, input, textarea")) return;
+                  toggleFlip(project.id);
+                }}
+              >
+                <div className="work-card-flipper">
+                  {/* FRONT OF CARD */}
+                  <div className="work-card-front">
+                    {project.image ? (
+                      <div
+                        className="work-image"
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Open full-screen preview of ${project.name}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleImageTrigger(e.currentTarget, e.clientX, e.clientY, project);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleImageTrigger(e.currentTarget, undefined, undefined, project);
+                          }
+                        }}
+                      >
+                        <div className="work-image-border-glow" aria-hidden="true" />
+                        <div className="work-image-expand-hint" aria-hidden="true">
+                          <Maximize2 size={12} />
+                          <span>EXPAND</span>
+                        </div>
+                        <img
+                          src={project.image}
+                          alt={`${project.name} preview`}
+                          width={1600}
+                          height={900}
+                          loading="lazy"
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        className="work-image work-image-empty"
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`${project.name} case study preview`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleImageTrigger(e.currentTarget, e.clientX, e.clientY);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleImageTrigger(e.currentTarget);
+                          }
+                        }}
+                      >
+                        <div className="work-image-border-glow" aria-hidden="true" />
+                        <span className="mono">CASE STUDY</span>
+                      </div>
+                    )}
+                    <div className="work-head">
+                      <p className="section-label">
+                        {project.index} / {project.kind}
+                      </p>
+                      <div className="work-head-actions">
+                        {project.verified ? (
+                          <span className="verified-badge">
+                            <BadgeCheck size={13} aria-hidden="true" /> VERIFIED PROJECT
+                          </span>
+                        ) : null}
+                        <button
+                          type="button"
+                          className="work-flip-trigger"
+                          aria-label={`Flip ${project.name} card to see key outcomes`}
+                          title="Click to flip card for key outcomes"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFlip(project.id);
+                          }}
+                        >
+                          <RotateCcw size={12} aria-hidden="true" />
+                          <span>Flip for summary</span>
+                        </button>
+                      </div>
+                    </div>
+                    <h3 className="display">{project.name}</h3>
+                    <p>{project.tagline}</p>
+
+                    {project.stats && (
+                      <div className="project-stats-strip" aria-label="Project metrics">
+                        <span className="project-stat-pill" title="Lines of Code">
+                          <Code2 size={13} aria-hidden="true" />
+                          <span className="tabular-nums">{project.stats.linesOfCode}</span>
+                        </span>
+                        <span className="stat-separator" aria-hidden="true">
+                          ·
+                        </span>
+                        <span className="project-stat-pill" title="Completion Date">
+                          <Calendar size={13} aria-hidden="true" />
+                          <span>{project.stats.completionDate}</span>
+                        </span>
+                        <span className="stat-separator" aria-hidden="true">
+                          ·
+                        </span>
+                        <span className="project-stat-pill" title="Team Size">
+                          <Users size={13} aria-hidden="true" />
+                          <span>{project.stats.teamSize}</span>
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="tag-row">
+                      {project.caseStudy.stack.slice(0, 5).map((tech) => (
+                        <span className="tag" key={tech}>
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="work-actions">
+                      {baseProjects.some((base) => base.id === project.id) ? (
+                        <InteractiveProjectButton id={project.id} />
+                      ) : null}
+                      <Button
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenId(project.id);
+                          setEditing(false);
+                        }}
+                      >
+                        Read case study
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFlip(project.id);
+                        }}
+                        className="work-flip-action-btn"
+                      >
+                        <RotateCcw size={13} className="mr-1.5" />
+                        Key outcomes
+                      </Button>
+                      {project.caseStudy.liveUrl ? (
+                        <Button asChild variant="ghost" onClick={(e) => e.stopPropagation()}>
+                          <a href={project.caseStudy.liveUrl} target="_blank" rel="noreferrer">
+                            Live site
+                          </a>
+                        </Button>
+                      ) : null}
+                      {project.caseStudy.repoUrl ? (
+                        <Button asChild variant="ghost" onClick={(e) => e.stopPropagation()}>
+                          <a href={project.caseStudy.repoUrl} target="_blank" rel="noreferrer">
+                            Source code
+                          </a>
+                        </Button>
+                      ) : null}
+                    </div>
                   </div>
-                  <img
-                    src={project.image}
-                    alt={`${project.name} preview`}
-                    width={1600}
-                    height={900}
-                    loading="lazy"
-                  />
-                </div>
-              ) : (
-                <div
-                  className="work-image work-image-empty"
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`${project.name} case study preview`}
-                  onClick={(e) => {
-                    handleImageTrigger(e.currentTarget, e.clientX, e.clientY);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      handleImageTrigger(e.currentTarget);
-                    }
-                  }}
-                >
-                  <div className="work-image-border-glow" aria-hidden="true" />
-                  <span className="mono">CASE STUDY</span>
-                </div>
-              )}
-              <div className="work-head">
-                <p className="section-label">
-                  {project.index} / {project.kind}
-                </p>
-                {project.verified ? (
-                  <span className="verified-badge">
-                    <BadgeCheck size={13} aria-hidden="true" /> VERIFIED PROJECT
-                  </span>
-                ) : null}
-              </div>
-              <h3 className="display">{project.name}</h3>
-              <p>{project.tagline}</p>
 
-              {project.stats && (
-                <div className="project-stats-strip" aria-label="Project metrics">
-                  <span className="project-stat-pill" title="Lines of Code">
-                    <Code2 size={13} aria-hidden="true" />
-                    <span className="tabular-nums">{project.stats.linesOfCode}</span>
-                  </span>
-                  <span className="stat-separator" aria-hidden="true">
-                    ·
-                  </span>
-                  <span className="project-stat-pill" title="Completion Date">
-                    <Calendar size={13} aria-hidden="true" />
-                    <span>{project.stats.completionDate}</span>
-                  </span>
-                  <span className="stat-separator" aria-hidden="true">
-                    ·
-                  </span>
-                  <span className="project-stat-pill" title="Team Size">
-                    <Users size={13} aria-hidden="true" />
-                    <span>{project.stats.teamSize}</span>
-                  </span>
-                </div>
-              )}
+                  {/* BACK OF CARD (3D Flipped) */}
+                  <div className="work-card-back">
+                    <div className="work-back-head">
+                      <p className="section-label">
+                        {project.index} / {project.kind}
+                      </p>
+                      <button
+                        type="button"
+                        className="work-back-flip-btn"
+                        aria-label="Flip back to front"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFlip(project.id);
+                        }}
+                      >
+                        <RotateCcw size={13} aria-hidden="true" />
+                        <span>Flip front</span>
+                      </button>
+                    </div>
 
-              <div className="tag-row">
-                {project.caseStudy.stack.slice(0, 5).map((tech) => (
-                  <span className="tag" key={tech}>
-                    {tech}
-                  </span>
-                ))}
-              </div>
-              <div className="work-actions">
-                {baseProjects.some((base) => base.id === project.id) ? (
-                  <InteractiveProjectButton id={project.id} />
-                ) : null}
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setOpenId(project.id);
-                    setEditing(false);
-                  }}
-                >
-                  Read case study
-                </Button>
-                {project.caseStudy.liveUrl ? (
-                  <Button asChild variant="ghost">
-                    <a href={project.caseStudy.liveUrl} target="_blank" rel="noreferrer">
-                      Live site
-                    </a>
-                  </Button>
-                ) : null}
-                {project.caseStudy.repoUrl ? (
-                  <Button asChild variant="ghost">
-                    <a href={project.caseStudy.repoUrl} target="_blank" rel="noreferrer">
-                      Source code
-                    </a>
-                  </Button>
-                ) : null}
-              </div>
-            </article>
-          ))}
+                    <div className="work-back-content">
+                      <h3 className="display work-back-title">{project.name}</h3>
+                      <p className="work-back-summary">{project.caseStudy.overview}</p>
+
+                      <div className="work-back-outcomes">
+                        <p className="section-label">// KEY OUTCOMES &amp; IMPACT</p>
+                        <ul className="work-outcomes-list">
+                          {project.caseStudy.outcomes.map((outcome, idx) => (
+                            <li key={idx} className="work-outcome-item">
+                              <BadgeCheck size={14} className="outcome-icon" aria-hidden="true" />
+                              <span>{outcome}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {project.caseStudy.features && project.caseStudy.features.length > 0 && (
+                        <div className="work-back-features">
+                          <p className="section-label">// CORE DELIVERABLES</p>
+                          <div className="tag-row">
+                            {project.caseStudy.features.slice(0, 4).map((feat, idx) => (
+                              <span className="tag" key={idx}>
+                                {feat}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="work-actions work-back-actions">
+                      <Button
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenId(project.id);
+                          setEditing(false);
+                        }}
+                      >
+                        Read full study
+                      </Button>
+                      {project.caseStudy.liveUrl && (
+                        <Button asChild variant="ghost" onClick={(e) => e.stopPropagation()}>
+                          <a href={project.caseStudy.liveUrl} target="_blank" rel="noreferrer">
+                            Live site
+                          </a>
+                        </Button>
+                      )}
+                      <Button
+                        variant="secondary"
+                        className="ml-auto"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFlip(project.id);
+                        }}
+                      >
+                        <RotateCcw size={13} className="mr-1.5" /> Back to front
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       )}
 
