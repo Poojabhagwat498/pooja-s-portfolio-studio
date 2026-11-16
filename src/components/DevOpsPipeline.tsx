@@ -340,7 +340,7 @@ export function DevOpsPipeline() {
     if (running) return;
     setRunning(true);
     setRunProgress(0);
-    setActiveStageId(workflow.stages[0].id);
+    setActiveStageId(getFirstStage(workflow).id);
 
     // Reset logs with initial runner header
     const initialLogs: Record<string, string[]> = {};

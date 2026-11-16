@@ -315,6 +315,12 @@ function swimPulse(time: number) {
     : (Math.exp(-(ph - 0.28) * 3.2) - rest) / (1 - rest);
 }
 
+function requiredUniform<T>(material: THREE.ShaderMaterial, name: string): { value: T } {
+  const uniform = material.uniforms[name];
+  if (!uniform) throw new Error(`Missing jellyfish shader uniform: ${name}`);
+  return uniform as { value: T };
+}
+
 function Jellyfish({
   expanded,
   still,
@@ -402,25 +408,28 @@ function Jellyfish({
     const f = follow.current;
 
     // update glow color on all materials
-    (assets.bellMat.uniforms.uGlow.value as THREE.Color).copy(glow);
-    (assets.tentacleMat.uniforms.uGlow.value as THREE.Color).copy(glow);
-    (assets.armMat.uniforms.uGlow.value as THREE.Color).copy(glow);
+    requiredUniform<THREE.Color>(assets.bellMat, "uGlow").value.copy(glow);
+    requiredUniform<THREE.Color>(assets.tentacleMat, "uGlow").value.copy(glow);
+    requiredUniform<THREE.Color>(assets.armMat, "uGlow").value.copy(glow);
 
     // dark mode tint — richer glow on dark backgrounds
-    assets.bellMat.uniforms.uDark.value = THREE.MathUtils.damp(
-      assets.bellMat.uniforms.uDark.value as number,
+    const bellDark = requiredUniform<number>(assets.bellMat, "uDark");
+    const tentacleDark = requiredUniform<number>(assets.tentacleMat, "uDark");
+    const armDark = requiredUniform<number>(assets.armMat, "uDark");
+    bellDark.value = THREE.MathUtils.damp(
+      bellDark.value,
       dark,
       4,
       dt,
     );
-    assets.tentacleMat.uniforms.uDark.value = THREE.MathUtils.damp(
-      assets.tentacleMat.uniforms.uDark.value as number,
+    tentacleDark.value = THREE.MathUtils.damp(
+      tentacleDark.value,
       dark,
       4,
       dt,
     );
-    assets.armMat.uniforms.uDark.value = THREE.MathUtils.damp(
-      assets.armMat.uniforms.uDark.value as number,
+    armDark.value = THREE.MathUtils.damp(
+      armDark.value,
       dark,
       4,
       dt,
@@ -428,36 +437,41 @@ function Jellyfish({
 
     // boost from CTA hover flare
     const targetBoost = flare;
-    const curBoost = assets.bellMat.uniforms.uBoost.value as number;
-    assets.bellMat.uniforms.uBoost.value = THREE.MathUtils.damp(curBoost, targetBoost, 6, dt);
-    assets.tentacleMat.uniforms.uFlare.value = THREE.MathUtils.damp(
-      assets.tentacleMat.uniforms.uFlare.value as number,
+    const bellBoost = requiredUniform<number>(assets.bellMat, "uBoost");
+    const tentacleFlare = requiredUniform<number>(assets.tentacleMat, "uFlare");
+    const armFlare = requiredUniform<number>(assets.armMat, "uFlare");
+    bellBoost.value = THREE.MathUtils.damp(bellBoost.value, targetBoost, 6, dt);
+    tentacleFlare.value = THREE.MathUtils.damp(
+      tentacleFlare.value,
       flare,
       6,
       dt,
     );
-    assets.armMat.uniforms.uFlare.value = THREE.MathUtils.damp(
-      assets.armMat.uniforms.uFlare.value as number,
+    armFlare.value = THREE.MathUtils.damp(
+      armFlare.value,
       flare,
       6,
       dt,
     );
 
     // fade (depth effect)
-    assets.bellMat.uniforms.uFade.value = THREE.MathUtils.damp(
-      assets.bellMat.uniforms.uFade.value as number,
+    const bellFade = requiredUniform<number>(assets.bellMat, "uFade");
+    const tentacleFade = requiredUniform<number>(assets.tentacleMat, "uFade");
+    const armFade = requiredUniform<number>(assets.armMat, "uFade");
+    bellFade.value = THREE.MathUtils.damp(
+      bellFade.value,
       fade,
       5,
       dt,
     );
-    assets.tentacleMat.uniforms.uFade.value = THREE.MathUtils.damp(
-      assets.tentacleMat.uniforms.uFade.value as number,
+    tentacleFade.value = THREE.MathUtils.damp(
+      tentacleFade.value,
       fade,
       5,
       dt,
     );
-    assets.armMat.uniforms.uFade.value = THREE.MathUtils.damp(
-      assets.armMat.uniforms.uFade.value as number,
+    armFade.value = THREE.MathUtils.damp(
+      armFade.value,
       fade,
       5,
       dt,
@@ -654,7 +668,7 @@ export function DriftingJellyfish() {
   const glow = useMemo(() => {
     const list = isDark ? SECTION_ACCENTS_DARK : SECTION_ACCENTS_LIGHT;
     const found = list.find((s) => s.id === activeSection);
-    return found ? found.glow : list[0].glow;
+    return found?.glow ?? list[0]?.glow ?? new THREE.Color("#2563EB");
   }, [activeSection, isDark]);
 
   // depth fade — shrink and fade as you scroll past hero
@@ -882,7 +896,9 @@ export function DriftingJellyfish() {
     }, 2500);
     if (clickCount.current >= 3) {
       clickCount.current = 0;
-      const fact = FUN_FACTS[Math.floor(Math.random() * FUN_FACTS.length)];
+      const fact =
+        FUN_FACTS[Math.floor(Math.random() * FUN_FACTS.length)] ??
+        "Thanks for exploring Pooja's portfolio!";
       const el = button.current;
       const rect = el?.getBoundingClientRect();
       if (rect) setBubblePos({ left: rect.left - 230, top: rect.top + rect.height * 0.25 });
@@ -928,7 +944,7 @@ export function DriftingJellyfish() {
       {bubble && (
         <JellyBubble
           message={bubble.message}
-          actions={bubble.actions}
+          {...(bubble.actions ? { actions: bubble.actions } : {})}
           onDismiss={() => setBubble(null)}
           position={bubblePos}
         />
