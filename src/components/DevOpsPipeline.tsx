@@ -246,6 +246,18 @@ const WORKFLOWS: WorkflowData[] = [
   },
 ];
 
+function getFirstWorkflow(): WorkflowData {
+  const workflow = WORKFLOWS[0];
+  if (!workflow) throw new Error("At least one workflow must be configured");
+  return workflow;
+}
+
+function getFirstStage(workflow: WorkflowData): PipelineStage {
+  const stage = workflow.stages[0];
+  if (!stage) throw new Error(`Workflow ${workflow.id} must contain at least one stage`);
+  return stage;
+}
+
 const DEVOPS_TOOLS = [
   { name: "GitHub Actions", desc: "Automated CI/CD pipelines" },
   { name: "Docker", desc: "Containerized environments" },
@@ -265,8 +277,9 @@ export function DevOpsPipeline() {
   const [loadingLogs, setLoadingLogs] = useState<boolean>(false);
   const consoleOutputRef = useRef<HTMLDivElement>(null);
 
-  const workflow = WORKFLOWS.find((w) => w.id === activeWorkflow) ?? WORKFLOWS[0];
-  const activeStage = workflow.stages.find((s) => s.id === activeStageId) ?? workflow.stages[0];
+  const workflow = WORKFLOWS.find((w) => w.id === activeWorkflow) ?? getFirstWorkflow();
+  const activeStage =
+    workflow.stages.find((s) => s.id === activeStageId) ?? getFirstStage(workflow);
 
   // Select a stage, highlight it, and trigger a load animation for its logs
   const handleSelectStage = (stageId: string) => {
@@ -342,7 +355,8 @@ export function DevOpsPipeline() {
       step++;
       setRunProgress(step);
       if (step < stageCount) {
-        setActiveStageId(workflow.stages[step].id);
+        const nextStage = workflow.stages[step];
+        if (nextStage) setActiveStageId(nextStage.id);
       }
       if (step >= stageCount) {
         clearInterval(interval);
@@ -363,7 +377,7 @@ export function DevOpsPipeline() {
   };
 
   useEffect(() => {
-    setActiveStageId(workflow.stages[0].id);
+    setActiveStageId(getFirstStage(workflow).id);
     setRunProgress(workflow.stages.length);
   }, [activeWorkflow, workflow.stages]);
 
